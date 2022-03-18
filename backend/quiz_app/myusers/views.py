@@ -7,6 +7,8 @@ from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
+from quiz_app.email_settings import *
+from django.core.mail import send_mail
 
 from .serializers import (
 	RegisterSerializer
@@ -44,6 +46,8 @@ def user_register(request):
 			if serializer.is_valid():
 				serializer.save()         
 				print("Email Sent")
+				content = EMAIL_CONTENT["ACTIVATION"].format(name=register_data["username"]) +EMAIL_BASE_LINK + register_data["username"] +"/code=" + code +"/" 
+				send_mail(EMAIL_TITLE["ACTIVATION"] , content , DEFAULT_FROM_EMAIL , [register_data["email"]])
 				return Response("ok" , status = status.HTTP_200_OK)
 			return Response(serializer.errors , status = status.HTTP_400_BAD_REQUEST)
 		return Response("Password must be atleast 4 characters",status=status.HTTP_400_BAD_REQUEST)
