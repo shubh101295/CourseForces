@@ -3,7 +3,8 @@ import string
 import hashlib
 import bcrypt
 
-from django.shortcuts import render
+from django.http import HttpResponse
+from django.shortcuts import render,get_object_or_404
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
@@ -45,10 +46,27 @@ def user_register(request):
 			serializer = RegisterSerializer(data = register_data)
 			if serializer.is_valid():
 				serializer.save()         
-				print("Email Sent")
-				content = EMAIL_CONTENT["ACTIVATION"].format(name=register_data["username"]) +EMAIL_BASE_LINK + register_data["username"] +"/code=" + code +"/" 
+				# print("Email Sent")
+				content = EMAIL_CONTENT["ACTIVATION"].format(name=register_data["username"]) +EMAIL_BASE_LINK +"/activate/"+ register_data["username"] +"/code=" + code +"/" 
 				send_mail(EMAIL_TITLE["ACTIVATION"] , content , DEFAULT_FROM_EMAIL , [register_data["email"]])
 				return Response("ok" , status = status.HTTP_200_OK)
 			return Response(serializer.errors , status = status.HTTP_400_BAD_REQUEST)
 		return Response("Password must be atleast 4 characters",status=status.HTTP_400_BAD_REQUEST)
 	return Response("Password must be same", status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["GET"])
+def activate(request , username, code):
+	user= get_object_or_404(MyUser, username=username)
+	hashed_code = hashlib.sha256(code.encode()).hexdigest()
+	if user.verified == True:
+		return HttpResponse("Invalid Request") 
+		# Response("Invalid Request",status = status.HTTP_401_UNAUTHORIZED) 
+	else: #if user.verified == False
+		if user.verification_code==hashed_code:
+			user.verified= True
+			user.verification_code = ''
+			user.save()
+			return HttpResponse("Activated Your Account")
+		return HttpResponse("Invalid Request") 
+	
