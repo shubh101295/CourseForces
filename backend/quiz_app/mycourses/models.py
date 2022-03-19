@@ -18,3 +18,4 @@ class user_in_course(models.Model):
 	course = models.ForeignKey(Course , on_delete=models.CASCADE)
 	role = models.CharField(max_length=1, choices = role_options) 
 	request_accepted = models.BooleanField(default = False)
+	verification_code = models.CharField(max_length = 66,null=True ,blank=True)
