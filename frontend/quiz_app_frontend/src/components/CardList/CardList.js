@@ -20,7 +20,7 @@ const CardList = (props) => {
       {allCards}
       {
         props.role==='Teacher'
-        ? <Add text="Course"/>
+        ? <Add text="Course" onRouteChange={props.onRouteChange} route="CreateCourse" />
         : < div />
       }
     </div>

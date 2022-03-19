@@ -9,6 +9,8 @@ import CardList from "./components/CardList/CardList";
 import QuizList from "./components/QuizList/QuizList";
 import StudentList from "./components/StudentList/StudentList";
 import InviteForm from "./components/InviteForm/InviteForm";
+import CreateQuiz from "./components/CreateQuiz/CreateQuiz";
+import CreateQuestions from "./components/CreateQuestions/CreateQuestions";
 import {particlesOptions} from './ParticlesProps.js'
 import {courses} from './Courses'
 import {quizzes} from './quizzes'
@@ -66,6 +68,7 @@ class App extends Component{
     this.setState({route: route});
   }
 
+
   onCourseSelect = (course) =>{
     this.setState({
       route:'CoursePage',
@@ -77,6 +80,10 @@ class App extends Component{
   sendInvite = () =>{
     alert(this.state.invite_page.input);
     // send to backend, and set route depending on received status
+  }
+
+  onAnswerChange = (key) => {
+
   }
   render(){
     return (
@@ -91,14 +98,20 @@ class App extends Component{
             this.state.route==='signin'
             ? <SignIn onRouteChange={this.onRouteChange}/>
             : this.state.route==='home' 
-            ? <CardList onCourseSelect={this.onCourseSelect} role={this.state.user.role} courses = {courses} />
+            ? <CardList onCourseSelect={this.onCourseSelect} role={this.state.user.role} courses = {courses} onRouteChange={this.onRouteChange} />
             : this.state.route==='register'
             ? <Register onRouteChange={this.onRouteChange} />
             : this.state.route==='CoursePage'
             ? <QuizList onRouteChange={this.onRouteChange} course_code={this.state.course_page.displayed_course} role={this.state.user.role} quizzes = {quizzes} />
             : this.state.route==='StudentList'
             ? <StudentList course_code={this.state.course_page.displayed_course} onRouteChange={this.onRouteChange} students={students}/>
-            : <InviteForm sendInvite = {this.sendInvite} onInputChange={this.onInputChange} course_code={this.state.course_page.displayed_course} onRouteChange={this.onRouteChange} />
+            : this.state.route==='InviteForm'
+            ? <InviteForm sendInvite = {this.sendInvite} onInputChange={this.onInputChange} course_code={this.state.course_page.displayed_course} onRouteChange={this.onRouteChange} />
+            : this.state.route==='CreateQuiz'
+            ? <CreateQuiz onRouteChange={this.onRouteChange} />
+            : this.state.route==='CreateQuestions'
+            ? <CreateQuestions onRouteChange={this.onRouteChange} num={2} />
+            : <p> Component not yet created! </p>
           }
         </div>
       );

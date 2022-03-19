@@ -19,7 +19,7 @@ const QuizList = (props) => {
       {allCards}
       {
         props.role==='Teacher'
-        ? <Add text="Quiz" />
+        ? <Add text="Quiz" onRouteChange={props.onRouteChange} route="CreateQuiz" />
         : < div />
       }
     </div>
