@@ -11,6 +11,8 @@ from rest_framework import status
 from quiz_app.email_settings import *
 from django.core.mail import send_mail
 
+from .utils import getUser,hashSHA256
+
 from .serializers import (
 	RegisterSerializer
 )
@@ -33,6 +35,9 @@ def user_register(request):
 	register_data["username"] = request.data.get("username","")
 	register_data["department"] = request.data.get("department","")
 	register_data["email"] = request.data.get("email","")
+	if '@' in register_data["username"]:
+		return Response("username cannot contain '@' symbol", status=status.HTTP_400_BAD_REQUEST)
+		
 	other_user = MyUser.objects.filter(email = register_data["email"],verified=True)
 	if len(other_user)>=1:
 		return Response("User with that emailID is registered" ,status = status.HTTP_401_UNAUTHORIZED)
