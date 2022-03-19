@@ -18,3 +18,7 @@ class MyUser(models.Model):
     password = models.CharField(max_length=70)
     verified = models.BooleanField(default = False)
     verification_code = models.CharField(max_length = 66,null=True ,blank=True)
+
+class Token(models.Model):
+	user = models.ForeignKey(MyUser , on_delete = models.CASCADE)
+	token = models.CharField(max_length=66 ,unique=True)

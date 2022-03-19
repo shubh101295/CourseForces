@@ -2,7 +2,7 @@ import string
 import random 
 import hashlib
 
-from .models import MyUser
+from .models import MyUser,Token
 
 def hashSHA256(value):
 	return hashlib.sha256(value.encode()).hexdigest()
