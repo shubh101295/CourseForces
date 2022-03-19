@@ -117,3 +117,50 @@ def user_logout(request):
 		my_token.delete()
 		return Response("Succesfully logged out" , status=status.HTTP_200_OK)
 	return Response("No user logged in", status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(["POST"])
+def forgot_password1(request):
+	user = getUser(request)
+	if user is None:
+		value = request.data.get("value" ,"")
+		if len(value)>0:
+			users = MyUser.objects.filter(Q(username=value) | Q(email=value)).distinct()
+			if len(users) ==1:
+				user = users[0]
+				if user.verified == True:
+					code = ''.join(random.choices(string.ascii_uppercase + string.ascii_lowercase + string.digits, k = 20)) 
+					user.verification_code = hashSHA256(code)
+					user.save()
+					content = EMAIL_CONTENT["FORGOT_PASSWORD"].format(name=user.username) +EMAIL_BASE_LINK +'password/forgot/2/' + user.username +"/code=" + code +"/" 
+					send_mail(EMAIL_TITLE["FORGOT_PASSWORD"] , content , DEFAULT_FROM_EMAIL , [user.email])
+					return Response("verification code sent", status=status.HTTP_200_OK)
+				return Response("Please first activate your account by clicking on the activation link sent to your email" ,status=status.HTTP_400_BAD_REQUEST)
+			return Response("User is not registered with us" , status=status.HTTP_400_BAD_REQUEST)
+		return Response("email/username cannot be empty" ,status=status.HTTP_400_BAD_REQUEST)
+	return Response("The user is logged in .Try after logging out", status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(["POST"])
+def forgot_password2(request,username,code):
+	user = getUser(request)
+	if user is None:
+		users = MyUser.objects.filter(Q(username=username)).distinct()
+		if len(users) ==1:
+			user = users[0]
+			if user.verified == True:
+				code= hashSHA256(code)
+				if code == user.verification_code:
+					new1 = request.data.get("new_password1","")
+					new2 = request.data.get("new_password2","")
+					if new1 == new2:
+						if len(new1)>=4:
+							new = HashPass(new1).decode()
+							user.password = new
+							user.verification_code=""
+							user.save()
+							return Response("Password changed Successfully" ,status=status.HTTP_200_OK)		
+						return Response("Password must contain 4 characters", status=status.HTTP_400_BAD_REQUEST)
+					return Response("Password must be same", status=status.HTTP_400_BAD_REQUEST)
+				return Response("Invalid verification code", status=status.HTTP_401_UNAUTHORIZED)
+			return Response("Please first activate your account by clickink on the activation link sent to the emailid" ,status=status.HTTP_400_BAD_REQUEST)
+		return Response("User is not registered with us" , status=status.HTTP_400_BAD_REQUEST)
+	return Response("The user is logged in .Try after logging out", status=status.HTTP_400_BAD_REQUEST)
