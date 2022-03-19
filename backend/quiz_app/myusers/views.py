@@ -19,7 +19,7 @@ from .serializers import (
 )
 
 from .models import (
-    MyUser
+    MyUser,Token
 )
 
 def HashPass(password):
@@ -106,3 +106,14 @@ def user_login(request):
 			return Response("There is no user registered with "+ value + " username/email" , status=status.HTTP_400_BAD_REQUEST)
 		return Response("Email/username field should be non empty", status=status.HTTP_400_BAD_REQUEST)
 	return Response("User is already logged in" , status=status.HTTP_403_FORBIDDEN)
+
+
+@api_view(["POST"])
+def user_logout(request):
+	user = getUser(request)
+	if user is not None:
+		token = hashSHA256(request.headers["token"])
+		my_token = get_object_or_404(Token, token=token)
+		my_token.delete()
+		return Response("Succesfully logged out" , status=status.HTTP_200_OK)
+	return Response("No user logged in", status=status.HTTP_400_BAD_REQUEST)

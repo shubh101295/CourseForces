@@ -8,7 +8,7 @@ def hashSHA256(value):
 	return hashlib.sha256(value.encode()).hexdigest()
 
 def getUser(request):
-    if "Token" in request.headers:
+    if "token" in request.headers:
     	token = request.headers["token"]
     	if len(token)==20:
     		token = hashSHA256(token)
