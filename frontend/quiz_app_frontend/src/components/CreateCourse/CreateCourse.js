@@ -29,7 +29,7 @@ class CreateCourse extends React.Component {
   render() {
   	return (
   		<div>
-			<div className="gray f2 serif"> Create New Quiz </div>
+			<div className="gray f2 serif"> Create New Course </div>
 			<div class="db center mw5 mw6-ns hidden br2 shadow-5 ">
 			<div className="w-100">
 				<h3 className="f4 bold serif">Course Code: <input id="title" className="dib ml2 mt2 input-reset ba b--black-20 pa2 mb2 db w-50"
