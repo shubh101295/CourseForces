@@ -10,7 +10,7 @@ export const questions = [
 				option4: "All of the above :p"
 			}
 		},
-		answer: "All of the above :p",
+		answer: 4,
 		marked_ans: '',
 		positive_marks: 3,
 		negative_marks: 1,
@@ -45,8 +45,8 @@ export const questions = [
 				option4: "None of the above"
 			}
 		},
-		answer: [ "Wednesday Thursday Friday", "What the Folks","Work Time Fun"],
-		positive_marks: 4,
+		answer: new Set([1,2,3]), // Set
+		positive_marks: 4, 
 		negative_marks: 1,
 		partial_allowed: true
 		
@@ -77,7 +77,7 @@ export const questions = [
 				option4: "All of the above :p"
 			}
 		},
-		answer: "All of the above :p",
+		answer: 4,
 		positive_marks: 3,
 		negative_marks: 1,
 		partial_allowed: false

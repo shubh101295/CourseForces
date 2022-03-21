@@ -20,6 +20,8 @@ class QuestionList extends React.Component {
 			submitted_time: time
 		})
 
+		this.props.onRouteChange('CoursePage')
+
 		// Send answers to backend
 		// fetch('http://localhost:3000/register', {
 	 //      method: 'post',

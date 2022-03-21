@@ -11,6 +11,7 @@ import QuestionList from "./components/QuestionList/QuestionList";
 import StudentList from "./components/StudentList/StudentList";
 import InviteForm from "./components/InviteForm/InviteForm";
 import CreateQuiz from "./components/CreateQuiz/CreateQuiz";
+import CreateCourse from "./components/CreateCourse/CreateCourse";
 import CreateQuestions from "./components/CreateQuestions/CreateQuestions";
 import QuizInfoPage from "./components/QuizInfoPage/QuizInfoPage";
 import {particlesOptions} from './ParticlesProps.js'
@@ -118,6 +119,8 @@ class App extends Component{
             ? <QuizInfoPage quiz={quizzes[this.state.quiz_page.displayed_quiz]} onRouteChange={this.onRouteChange} />
             : this.state.route === 'QuestionList'
             ? <QuestionList quiz={quizzes[this.state.quiz_page.displayed_quiz]} questions={questions} onRouteChange={this.onRouteChange} />
+            : this.state.route==='CreateCourse'
+            ? <CreateCourse onRouteChange={this.onRouteChange} />
             : <p> Component not yet created! </p>
           }
         </div>
