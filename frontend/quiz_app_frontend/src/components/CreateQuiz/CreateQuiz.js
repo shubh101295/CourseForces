@@ -43,10 +43,10 @@ class CreateQuiz extends React.Component {
 				/> </h3>
 			</div>
 			<div className="w-100">
-				<h3 className="f4 bold serif">Content: <input id="content" className="dib ml4 input-reset ba b--black-20 pa2 mb2 db w-50"
+				<h3 className="f4 mr2 dib serif">Content: </h3> <textarea id="content" className="dib mt2 ml4 input-reset ba b--black-20 pa2 mb2 db w-50"
 	  			onChange={this.onContentChange}
 	  			type="text"
-				/> </h3>
+				/> 
 			</div>
 			<div className="w-100">
 				<h3 className="f4 bold serif">Start time: <input id="start_at" className="dib ml2 input-reset ba b--black-20 pa2 mb2 db w-50"
