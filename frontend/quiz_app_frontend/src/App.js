@@ -7,14 +7,17 @@ import Register from './components/Register/Register'
 import Particles from "react-tsparticles";
 import CardList from "./components/CardList/CardList";
 import QuizList from "./components/QuizList/QuizList";
+import QuestionList from "./components/QuestionList/QuestionList";
 import StudentList from "./components/StudentList/StudentList";
 import InviteForm from "./components/InviteForm/InviteForm";
 import CreateQuiz from "./components/CreateQuiz/CreateQuiz";
 import CreateQuestions from "./components/CreateQuestions/CreateQuestions";
+import QuizInfoPage from "./components/QuizInfoPage/QuizInfoPage";
 import {particlesOptions} from './ParticlesProps.js'
 import {courses} from './Courses'
 import {quizzes} from './quizzes'
 import {students} from './students'
+import {questions} from './questions'
 
 const initialState = {
   route: 'signin',
@@ -29,7 +32,7 @@ const initialState = {
     displayed_course: ''
   },
   quiz_page: {
-    displayed_quiz: ''
+    displayed_quiz: 0
   },
   invite_page: {
     input: ''
@@ -111,6 +114,10 @@ class App extends Component{
             ? <CreateQuiz onRouteChange={this.onRouteChange} />
             : this.state.route==='CreateQuestions'
             ? <CreateQuestions onRouteChange={this.onRouteChange} num={2} />
+            : this.state.route==='QuizInfoPage'
+            ? <QuizInfoPage quiz={quizzes[this.state.quiz_page.displayed_quiz]} onRouteChange={this.onRouteChange} />
+            : this.state.route === 'QuestionList'
+            ? <QuestionList questions={questions} onRouteChange={this.onRouteChange} />
             : <p> Component not yet created! </p>
           }
         </div>

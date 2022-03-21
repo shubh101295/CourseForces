@@ -2,7 +2,7 @@ export const questions = [
 	{
 		question_type: 'MCQ',
 		content:{
-			heading: "What is full form of WTF?"
+			heading: "What is full form of WTF?",
 			options: {
 				option1: "Wednesday Thursday Friday",
 				option2: "What the Folks",
@@ -13,14 +13,14 @@ export const questions = [
 		answer: "All of the above :p",
 		marked_ans: '',
 		positive_marks: 3,
-		negative_marks: -1,
+		negative_marks: 1,
 		partial_allowed: false
 		
 	},
 	{
 		question_type: 'MCQ',
 		content:{
-			heading: "What is full form of LOL?"
+			heading: "What is full form of LOL?",
 			options: {
 				option1: "Laughing Out Loud",
 				option2: "Laughing out Laughing",
@@ -31,13 +31,13 @@ export const questions = [
 		answer: "Laughing Out Loud",
 		marked_ans: '',
 		positive_marks: 3,
-		negative_marks: -1,
+		negative_marks: 1,
 		partial_allowed: false
 	},
 	{
 		question_type: 'MSQ',
 		content:{
-			heading: "What is full form of WTF?"
+			heading: "What is full form of WTF?",
 			options: {
 				option1: "Wednesday Thursday Friday",
 				option2: "What the Folks",
@@ -47,14 +47,14 @@ export const questions = [
 		},
 		answer: [ "Wednesday Thursday Friday", "What the Folks","Work Time Fun"],
 		positive_marks: 4,
-		negative_marks: -1,
+		negative_marks: 1,
 		partial_allowed: true
 		
 	},
 	{
 		question_type: 'T/F',
 		content:{
-			heading: "The full form of SQL is Subsequent Query Language?"
+			heading: "The full form of SQL is Subsequent Query Language?",
 			options: {
 				option1: "True",
 				option2: "False",
@@ -69,7 +69,7 @@ export const questions = [
 	{
 		question_type: 'MCQ',
 		content:{
-			heading: "What is full form of WTF?"
+			heading: "What is full form of WTF?",
 			options: {
 				option1: "Wednesday Thursday Friday",
 				option2: "What the Folks",
@@ -79,7 +79,7 @@ export const questions = [
 		},
 		answer: "All of the above :p",
 		positive_marks: 3,
-		negative_marks: -1,
+		negative_marks: 1,
 		partial_allowed: false
 		
 	},
