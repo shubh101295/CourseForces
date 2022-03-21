@@ -67,7 +67,6 @@ class CreateQuiz extends React.Component {
 			</div>	
 			<button className="f6 link pointer br1  mr4 ph3 pv2 mb2 shadow-4 dib white bg-gray" onClick = {() => this.props.onRouteChange('CreateQuestions')}> Add Questions </button>
 		</div>
-
   		</div>
   	);
   }

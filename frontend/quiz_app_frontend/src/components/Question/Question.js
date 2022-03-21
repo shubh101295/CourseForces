@@ -13,9 +13,12 @@ class Question extends React.Component {
 
   onClickRadio = (event) => {
   	var c = this.state.checked_radio_option
+  	var ans = c===Number(event.target.id) ? '':Number(event.target.id)
   	this.setState({
   		checked_radio_option: c===Number(event.target.id) ? '':Number(event.target.id)
   	});
+
+  	this.props.onChangeAnswer(this.props.num-1, ans);
   }
 
   onClickCheck = (event) => {
@@ -27,23 +30,29 @@ class Question extends React.Component {
   	else{
   		s.add(x)
   	}
+  	var ans= s
   	this.setState({
   		checkbox_options:s 
   	});
 
+  	this.props.onChangeAnswer(this.props.num-1, ans );
   }
 
   onClickTF = (event) => {
   	var c = this.state.true_false
+  	var ans = c===event.target.value ? '': event.target.value
   	this.setState({
   		true_false: c===event.target.value ? '': event.target.value
   	});
+  	this.props.onChangeAnswer(this.props.num-1, ans );
   }
 
   	onChangeSub = (event) => {
+
   		this.setState({
   			subjective:event.target.value 
   		});
+	  	this.props.onChangeAnswer(this.props.num-1, event.target.value);
   	}
 
   

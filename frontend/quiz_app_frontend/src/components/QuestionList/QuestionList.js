@@ -7,6 +7,7 @@ class QuestionList extends React.Component {
 		this.state = {
 			submitted: false,
 			submitted_time: '',
+			answers : new Array(this.props.questions.length)
 		}
 	}
 
@@ -18,6 +19,8 @@ class QuestionList extends React.Component {
 			submitted: true,
 			submitted_time: time
 		})
+
+		// Send answers to backend
 		// fetch('http://localhost:3000/register', {
 	 //      method: 'post',
 	 //      headers: {'Content-Type': 'application/json'},
@@ -35,6 +38,14 @@ class QuestionList extends React.Component {
 	 //        }
   //     	})
 	}
+
+	onChangeAnswer = (idx, ans) => {
+		var temp = this.state.answers;
+		temp[idx] = ans;
+		this.setState({
+			answers: temp 
+		});
+	}
 	render(){
 
 		const allQuestions = this.props.questions.map((user, i) => {
@@ -48,6 +59,7 @@ class QuestionList extends React.Component {
               answer={this.props.questions[i].answer}
               positive_marks={this.props.questions[i].positive_marks}
               negative_marks={this.props.questions[i].negative_marks}
+              onChangeAnswer = {this.onChangeAnswer}
               />
               </React.Fragment>
           );
