@@ -55,6 +55,7 @@ class QuestionList extends React.Component {
 
 		return (
 			<div>
+				<h1 className="f1  garamond"> {this.props.quiz.quiz_title} </h1>
 				{allQuestions}
 				<div className="w-100 center">
 				<button class="center f6 link pointer br1 fr mr4 ph3 pv2 mb2 shadow-4 dib white bg-gray" onClick={this.onSubmit}> Submit </button>

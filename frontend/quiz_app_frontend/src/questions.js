@@ -54,7 +54,7 @@ export const questions = [
 	{
 		question_type: 'T/F',
 		content:{
-			heading: "The full form of SQL is Subsequent Query Language?",
+			heading: "The full form of SQL is Subsequent Query Language",
 			options: {
 				option1: "True",
 				option2: "False",
@@ -78,6 +78,17 @@ export const questions = [
 			}
 		},
 		answer: "All of the above :p",
+		positive_marks: 3,
+		negative_marks: 1,
+		partial_allowed: false
+		
+	},
+	{
+		question_type: 'Subjective',
+		content:{
+			heading: "How much effort was required to build this?",
+		},
+		answer: "A lot of it",
 		positive_marks: 3,
 		negative_marks: 1,
 		partial_allowed: false

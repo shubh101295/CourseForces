@@ -117,7 +117,7 @@ class App extends Component{
             : this.state.route==='QuizInfoPage'
             ? <QuizInfoPage quiz={quizzes[this.state.quiz_page.displayed_quiz]} onRouteChange={this.onRouteChange} />
             : this.state.route === 'QuestionList'
-            ? <QuestionList questions={questions} onRouteChange={this.onRouteChange} />
+            ? <QuestionList quiz={quizzes[this.state.quiz_page.displayed_quiz]} questions={questions} onRouteChange={this.onRouteChange} />
             : <p> Component not yet created! </p>
           }
         </div>
