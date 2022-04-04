@@ -9,12 +9,13 @@ from quiz_app.email_settings import *
 from django.db.models import Q 
 import random
 import string
+import hashlib
 
 
 from .models import Course,user_in_course
 from .serializers import CourseSerializer
 from myusers.utils import getUser,getUserData,hashSHA256
-
+from myusers.models import MyUser
 
 @api_view(["POST"])
 def create_group(request):
@@ -45,7 +46,7 @@ def roll_full_form(current_role):
 	if current_role=="S":
 		return "student"
 	return "professor"
-	
+
 @api_view(["POST"])
 def send_request(request):
 	user = getUser(request)
@@ -67,13 +68,16 @@ def send_request(request):
 								if request.data.get("join_as_role","")=="S" or request.data.get("join_as_role","")=="P":
 									while True:
 										code = ''.join(random.choices(string.ascii_uppercase + string.ascii_lowercase + string.digits, k = 20)) 
-										temp_codes = user_in_course.objects.filter(Q(verification_code=hashSHA256(code)))
+										temp_codes = user_in_course.objects.filter(Q(verification_code=hashlib.sha256(code.encode()).hexdigest()))
 										if len(temp_codes) == 0:
 											break
-									newuser_in_course = user_in_course(user=my_user,course=course,role=request.data.get("join_as_role",""),verification_code=hashSHA256(code))
+									print(code,hashlib.sha256(code.encode()).hexdigest())
+									newuser_in_course = user_in_course(user=my_user,course=course,role=request.data.get("join_as_role",""),\
+																			verification_code=hashlib.sha256(code.encode()).hexdigest())
 									newuser_in_course.save()
-									content = EMAIL_CONTENT["COURSE_JOIN_REQUEST"].format(name1=my_user.username,name2=user.username,course_name=course.course_name,role=roll_full_form(request.data.get("join_as_role",""))) \
-													+EMAIL_BASE_LINK_COURSE_JOINING + user.username +"/"+str(course.pk)+"/code=" + code +"/" 
+									content = EMAIL_CONTENT["COURSE_JOIN_REQUEST"].format(name1=my_user.username,\
+													name2=user.username,course_name=course.course_name,role=roll_full_form(request.data.get("join_as_role",""))) \
+													+EMAIL_BASE_LINK_COURSE_JOINING +"code=" + code +"/" 
 									send_mail(EMAIL_TITLE["COURSE_JOIN_REQUEST"].format(course_code=course.course_code) , content , DEFAULT_FROM_EMAIL , [my_user.email])
 									return Response("User has been invited to the course",status=status.HTTP_200_OK)
 								return Response("Invalid role.Not allowed",status= status.HTTP_400_BAD_REQUEST)
@@ -84,6 +88,19 @@ def send_request(request):
 			return Response("No such course exists" ,status= status.HTTP_400_BAD_REQUEST)
 		return Response("First Activate your account", status=status.HTTP_400_BAD_REQUEST)
 	return Response("No user is logged in ", status=status.HTTP_401_UNAUTHORIZED)
+
+@api_view(["GET"])
+def accept_course_join(request , code):
+	temp_courses = user_in_course.objects.filter(Q(verification_code=hashlib.sha256(code.encode()).hexdigest())).distinct()
+	print(hashlib.sha256(code.encode()).hexdigest())
+	if len(temp_courses) == 1:
+		temp_course = temp_courses[0]
+		temp_course.request_accepted= True
+		temp_course.verification_code = ''
+		temp_course.save()		
+		return HttpResponse("Successfully Added in the course")	
+	return HttpResponse("Invalid request")
+	
 
 @api_view(["GET"])
 def view_my_courses(request):
