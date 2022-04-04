@@ -41,6 +41,11 @@ def create_group(request):
 		return Response("First Activate your account", status=status.HTTP_400_BAD_REQUEST)
 	return Response("No user is logged in ", status=status.HTTP_401_UNAUTHORIZED)
 
+def roll_full_form(current_role):
+	if current_role=="S":
+		return "student"
+	return "professor"
+	
 @api_view(["POST"])
 def send_request(request):
 	user = getUser(request)
@@ -60,10 +65,14 @@ def send_request(request):
 							relation = user_in_course.objects.filter(Q(user=my_user) & Q(course=course)).distinct()
 							if len(relation) ==0:
 								if request.data.get("join_as_role","")=="S" or request.data.get("join_as_role","")=="P":
-									code = ''.join(random.choices(string.ascii_uppercase + string.ascii_lowercase + string.digits, k = 20)) 
+									while True:
+										code = ''.join(random.choices(string.ascii_uppercase + string.ascii_lowercase + string.digits, k = 20)) 
+										temp_codes = user_in_course.objects.filter(Q(verification_code=hashSHA256(code)))
+										if len(temp_codes) == 0:
+											break
 									newuser_in_course = user_in_course(user=my_user,course=course,role=request.data.get("join_as_role",""),verification_code=hashSHA256(code))
 									newuser_in_course.save()
-									content = EMAIL_CONTENT["COURSE_JOIN_REQUEST"].format(name1=my_user.username,name2=user.username,course_name=course.course_name,role=request.data.get("join_as_role","")) \
+									content = EMAIL_CONTENT["COURSE_JOIN_REQUEST"].format(name1=my_user.username,name2=user.username,course_name=course.course_name,role=roll_full_form(request.data.get("join_as_role",""))) \
 													+EMAIL_BASE_LINK_COURSE_JOINING + user.username +"/"+str(course.pk)+"/code=" + code +"/" 
 									send_mail(EMAIL_TITLE["COURSE_JOIN_REQUEST"].format(course_code=course.course_code) , content , DEFAULT_FROM_EMAIL , [my_user.email])
 									return Response("User has been invited to the course",status=status.HTTP_200_OK)

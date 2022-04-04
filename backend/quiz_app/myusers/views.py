@@ -73,7 +73,7 @@ def activate(request , username, code):
 			user.verified= True
 			user.verification_code = ''
 			user.save()
-			return HttpResponse("Activated Your Account")
+			return HttpResponse("Successfully activated Your Account")
 		return HttpResponse("Invalid Request") 
 
 
