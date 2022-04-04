@@ -71,7 +71,7 @@ def send_request(request):
 										temp_codes = user_in_course.objects.filter(Q(verification_code=hashlib.sha256(code.encode()).hexdigest()))
 										if len(temp_codes) == 0:
 											break
-									print(code,hashlib.sha256(code.encode()).hexdigest())
+									# print(code,hashlib.sha256(code.encode()).hexdigest())
 									newuser_in_course = user_in_course(user=my_user,course=course,role=request.data.get("join_as_role",""),\
 																			verification_code=hashlib.sha256(code.encode()).hexdigest())
 									newuser_in_course.save()
@@ -92,7 +92,7 @@ def send_request(request):
 @api_view(["GET"])
 def accept_course_join(request , code):
 	temp_courses = user_in_course.objects.filter(Q(verification_code=hashlib.sha256(code.encode()).hexdigest())).distinct()
-	print(hashlib.sha256(code.encode()).hexdigest())
+	# print(hashlib.sha256(code.encode()).hexdigest())
 	if len(temp_courses) == 1:
 		temp_course = temp_courses[0]
 		temp_course.request_accepted= True
@@ -115,4 +115,18 @@ def view_my_courses(request):
 			# 	del my_course["course_id"]
 			return Response(courses,status=status.HTTP_200_OK)
 		return Response("First Activate your account", status=status.HTTP_400_BAD_REQUEST)
+	return Response("No user is logged in ", status=status.HTTP_401_UNAUTHORIZED)
+
+@api_view(["GET"])
+def view_course_list(request,course_pk):
+	user = getUser(request)
+	if user is not None:
+		course = Course.objects.filter(Q(pk=course_pk)).values()
+		if len(course)==1:
+			current_user_in_course = user_in_course.objects.filter(Q(course=course_pk) & Q(user=user)).values()
+			if len(current_user_in_course)==1:
+				users_in_course = user_in_course.objects.filter(Q(course=course_pk)).values()
+				return Response(users_in_course,status=status.HTTP_200_OK)
+			return Response("User not in course", status=status.HTTP_401_UNAUTHORIZED)
+		return Response("No such course exists" ,status= status.HTTP_400_BAD_REQUEST)
 	return Response("No user is logged in ", status=status.HTTP_401_UNAUTHORIZED)
