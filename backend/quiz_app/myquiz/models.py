@@ -40,3 +40,21 @@ class Option(models.Model):
 class Option_in_question(models.Model):
 	question = models.ForeignKey(Question , on_delete=models.CASCADE)
 	option = models.ForeignKey(Option , on_delete=models.CASCADE)
+
+class QuizAttempt(models.Model):
+	submitted = models.BooleanField(default=False) # for saving the quiz
+	submission_time = models.DateTimeField(auto_now=False, auto_now_add=False)
+	total_marks =  models.FloatField(default=0.0)
+
+class user_quizattempt(models.Model):
+	user = models.ForeignKey(MyUser , on_delete=models.CASCADE)
+	quiz_attempt = models.ForeignKey(QuizAttempt , on_delete=models.CASCADE)
+
+class quiz_quizattempt(models.Model):
+	quiz = models.ForeignKey(Quiz , on_delete=models.CASCADE)
+	quiz_attempt = models.ForeignKey(QuizAttempt , on_delete=models.CASCADE)
+
+class question_attempt(models.Model):
+	question = models.ForeignKey(Question , on_delete=models.CASCADE)
+	quiz_attempt = models.ForeignKey(QuizAttempt , on_delete=models.CASCADE)
+	student_answer = models.CharField(max_length=100, blank=True)
