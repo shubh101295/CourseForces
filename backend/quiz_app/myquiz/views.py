@@ -42,3 +42,35 @@ def add_quiz(request):
 			return Response(serializer.errors , status=status.HTTP_400_BAD_REQUEST) 
 		return Response("You are not Prof in the course",status=status.HTTP_401_UNAUTHORIZED)
 	return Response(util_data["error_message"], status=util_data["status"])
+
+@api_view(["POST"])
+def add_question(request):
+	user = getUser(request)
+	# print(user)
+	util_data,course = user_in_course_details(user,request.data.get("course_pk",""))
+	if util_data["allowed"]:
+		if util_data["relation"] == 'P': 
+			quiz_pk = request.data.get("quiz_pk", "")
+			if quiz_pk!="":
+				quiz_in_course_relations = quiz_in_course.objects.filter(Q(course=course) & Q(quiz=quiz_pk))
+				if len(quiz_in_course_relations)==1:
+					question_data = {}
+					question_data["content"] = request.data.get("content" ,"")
+					question_data["answer"] = request.data.get("answer","")
+					question_data["positive_marks"] = request.data.get("positive_marks","")
+					question_data["negative_marks"] = request.data.get("negative_marks","")
+					question_data["question_type"] = request.data.get("question_type","")
+					question_data["partial_allowed"] = request.data.get("partial_allowed","")
+					serializer = QuestionSerializer(data = question_data)
+					if serializer.is_valid():				
+						question_response = serializer.save()
+						new_question_in_quiz_relation = question_in_quiz(question=question_response,quiz=quiz_in_course_relations[0].quiz)
+						new_question_in_quiz_relation.save()
+						return Response({
+							"question_pk":question_response.pk
+							},status=status.HTTP_200_OK)
+					return Response(serializer.errors , status=status.HTTP_400_BAD_REQUEST)
+				return Response("No such quiz found in the course", status=status.HTTP_400_BAD_REQUEST)
+			return Response("quiz_pk should not be empty",status=status.HTTP_400_BAD_REQUEST)
+		return Response("You are not Prof in the course",status=status.HTTP_401_UNAUTHORIZED)
+	return Response(util_data["error_message"], status=util_data["status"])

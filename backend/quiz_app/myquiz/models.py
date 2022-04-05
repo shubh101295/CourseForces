@@ -20,15 +20,15 @@ class Question(models.Model):
 	content = models.CharField(max_length=200 )
 	answer = models.CharField(max_length=100, blank=True)	
 	question_type_options = [
-		("I" , "Integer Type"),
+		("B" , "Boolean Type"),
 		("S" , "MCQ Single Correct"),
 		("M" , "MCQ Multi Correct all options"),
 		("F" , "Fill in the blank") 
 	]
 	question_type = models.CharField(max_length=1,choices = question_type_options)
-	positive_marks = models.IntegerField()
+	positive_marks = models.FloatField()
 	negative_marks= models.FloatField()
-	parital_allowed = models.BooleanField(default=False)
+	partial_allowed = models.BooleanField(default=False)
 
 class question_in_quiz(models.Model):
 	question = models.ForeignKey(Question , on_delete=models.CASCADE)
