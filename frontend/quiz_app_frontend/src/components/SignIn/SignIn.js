@@ -18,23 +18,33 @@ class Signin extends React.Component {
   }
 
   onSubmitSignIn = () => {
-    // fetch('http://localhost:3000/signin', {
-    //   method: 'post',
-    //   headers: {'Content-Type': 'application/json'},
-    //   body: JSON.stringify({
-    //     email: this.state.signInEmail,
-    //     password: this.state.signInPassword
-    //   })
-    // })
-    //   .then(response => response.json())
-    //   .then(user => {
-    //     if (user.id) {
-    //       this.props.loadUser(user)
-    //       this.props.onRouteChange('home');
-    //     }
-    //   })
-    this.props.onRouteChange('home');
-    // alert("Route changed to home!");
+    fetch('http://127.0.0.1:8000/users/auth/login/', {
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/json',
+        // 'Authorization':'s2cQhLMEzKy3nXEvDzjc'
+      },
+      body: JSON.stringify({
+        value: this.state.signInEmail,
+        password: this.state.signInPassword
+      })
+    })
+      // .then((response)=>alert(response))
+      .then(response => response.json())
+      .then(user => {
+        if (user.message === "Successfully logged in") {
+          alert("Hehe login ho gaya")
+          alert(user.token)
+          this.props.loadUser(user)
+          this.props.onRouteChange('home');
+          alert("Route changed to home!");
+        }
+        if(user.message==="User is already logged in") {
+           alert("Hehe login nhi hua")
+          // alert(user.token)
+        }
+      })
+    // this.props.onRouteChange('home');
   }
 
   render() {

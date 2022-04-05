@@ -79,8 +79,10 @@ def activate(request , username, code):
 
 @api_view(["POST"])
 def user_login(request):
+	print("yoyo")
 	user = getUser(request)
 	if user is None:
+		print(request.data)
 		value = request.data.get("value" ,"")
 		if len(value)>0:
 			users = MyUser.objects.filter(Q(username=value) | Q(email=value)).distinct()
@@ -105,14 +107,14 @@ def user_login(request):
 				return Response("First activate the user to " ,status=status.HTTP_200_OK) 
 			return Response("There is no user registered with "+ value + " username/email" , status=status.HTTP_400_BAD_REQUEST)
 		return Response("Email/username field should be non empty", status=status.HTTP_400_BAD_REQUEST)
-	return Response("User is already logged in" , status=status.HTTP_403_FORBIDDEN)
+	return Response({"message":"User is already logged in"} , status=status.HTTP_403_FORBIDDEN)
 
 
 @api_view(["POST"])
 def user_logout(request):
 	user = getUser(request)
 	if user is not None:
-		token = hashSHA256(request.headers["token"])
+		token = hashSHA256(request.headers["Authorization"])
 		my_token = get_object_or_404(Token, token=token)
 		my_token.delete()
 		return Response("Succesfully logged out" , status=status.HTTP_200_OK)
