@@ -36,7 +36,9 @@ def add_quiz(request):
 				# print(a)
 				new_quiz_in_course_relation = quiz_in_course(course=course,quiz=quiz_response)
 				new_quiz_in_course_relation.save()
-				return	Response("ok" ,status=status.HTTP_200_OK)
+				return	Response({
+					"quiz_pk":quiz_response.pk 
+					} ,status=status.HTTP_200_OK)
 			return Response(serializer.errors , status=status.HTTP_400_BAD_REQUEST) 
 		return Response("You are not Prof in the course",status=status.HTTP_401_UNAUTHORIZED)
 	return Response(util_data["error_message"], status=util_data["status"])
