@@ -116,7 +116,7 @@ def add_question(request):
 		return Response("You are not Professor in the course",status=status.HTTP_401_UNAUTHORIZED)
 	return Response(util_data["error_message"], status=util_data["status"])
 
-@api_view(["POST"])
+@api_view(["DELETE"])
 def delete_question(request):
 	user = getUser(request)
 	util_data,course = user_in_course_details(user,request.data.get("course_pk",""))
@@ -131,6 +131,11 @@ def delete_question(request):
 						question_in_quiz_relations = question_in_quiz.objects.filter(Q(question=question_pk) & Q(quiz=quiz_pk))
 						if len(question_in_quiz_relations)==1:
 							question_relations = Question.objects.filter(Q(pk=question_pk))
+							options_in_questions_relations = Option_in_question.objects.filter(Q(question=question_pk))
+							for _option in options_in_questions_relations:
+								
+								option_relation = Option.objects.filter(Q(pk=_option.option.pk))
+								option_relation.delete()
 							question_relations.delete()
 							return Response("Succesfully deleted the question",status=status.HTTP_200_OK)
 						return Response("No such question found in the quiz", status=status.HTTP_400_BAD_REQUEST)
