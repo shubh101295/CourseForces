@@ -61,15 +61,56 @@ def add_question(request):
 					question_data["negative_marks"] = request.data.get("negative_marks","")
 					question_data["question_type"] = request.data.get("question_type","")
 					question_data["partial_allowed"] = request.data.get("partial_allowed","")
-					serializer = QuestionSerializer(data = question_data)
-					if serializer.is_valid():				
-						question_response = serializer.save()
-						new_question_in_quiz_relation = question_in_quiz(question=question_response,quiz=quiz_in_course_relations[0].quiz).distinct()
+					question_serializer = QuestionSerializer(data = question_data)
+					option_serialisers_results = []
+					if question_serializer.is_valid():				
+						option_serialisers = []
+						correct_answers_index = []
+						if question_data["question_type"] == "S" or question_data["question_type"] == "M": 
+							question_data["options"] = request.data.get("options",[])
+							index = 0
+							for _temp_option_data in question_data["options"]:
+								print(_temp_option_data)
+								if "option_value" not in _temp_option_data.keys() or "is_correct" not in _temp_option_data.keys():
+									return Response("Option at index "+str(index)+" has wrong format",status=status.HTTP_400_BAD_REQUEST)
+								_current_option_serialiser = OptionSerializer(data={"option_value":_temp_option_data["option_value"]})
+								if _current_option_serialiser.is_valid():
+									option_serialisers.append(_current_option_serialiser)
+								else:
+									return Response(_current_option_serialiser.errors , status=status.HTTP_400_BAD_REQUEST)
+								if _temp_option_data["is_correct"]==True:
+									correct_answers_index.append(index)
+								index+=1
+							if len(option_serialisers)<1 or len(option_serialisers)>5 or len(correct_answers_index)==0:
+								return Response("A question must have total number of options in range 1 to 5 and have atleast one answer correct", status=status.HTTP_400_BAD_REQUEST)
+							if 	question_data["question_type"] == "S" and len(correct_answers_index)>1:
+								return Response("A single correct type can have exactly one correct answer",status=status.HTTP_400_BAD_REQUEST)
+							index = 0
+							_answer_pks= []
+							for _temp_serializer in option_serialisers:
+								_current_option_results = _temp_serializer.save()
+								option_serialisers_results.append(_current_option_results)
+								# print(index,correct_answers_index,index in correct_answers_index)
+								if index in correct_answers_index:
+									_answer_pks.append(str(_current_option_results.pk))
+								index+=1
+							# print(_answer_pks)
+							question_data["answer"] = ";".join(_answer_pks)
+							question_serializer = QuestionSerializer(data = question_data)
+							if question_serializer.is_valid():
+								pass
+							else:
+								return Response(question_serializer.errors , status=status.HTTP_400_BAD_REQUEST)
+						question_response = question_serializer.save()
+						for _temp_option in option_serialisers_results:
+							option_in_question_relation = Option_in_question(question=question_response,option=_temp_option)
+							option_in_question_relation.save()
+						new_question_in_quiz_relation = question_in_quiz(question=question_response,quiz=quiz_in_course_relations[0].quiz)
 						new_question_in_quiz_relation.save()
 						return Response({
 							"question_pk":question_response.pk
 							},status=status.HTTP_200_OK)
-					return Response(serializer.errors , status=status.HTTP_400_BAD_REQUEST)
+					return Response(question_serializer.errors , status=status.HTTP_400_BAD_REQUEST)
 				return Response("No such quiz found in the course", status=status.HTTP_400_BAD_REQUEST)
 			return Response("quiz_pk should not be empty",status=status.HTTP_400_BAD_REQUEST)
 		return Response("You are not Professor in the course",status=status.HTTP_401_UNAUTHORIZED)

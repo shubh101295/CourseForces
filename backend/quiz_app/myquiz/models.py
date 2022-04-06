@@ -22,7 +22,7 @@ class Question(models.Model):
 	question_type_options = [
 		("B" , "Boolean Type"),
 		("S" , "MCQ Single Correct"),
-		("M" , "MCQ Multi Correct all options"),
+		("M" , "MCQ Multi Correct"),
 		("F" , "Fill in the blank") 
 	]
 	question_type = models.CharField(max_length=1,choices = question_type_options)
