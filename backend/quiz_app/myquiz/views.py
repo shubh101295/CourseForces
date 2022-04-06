@@ -133,7 +133,6 @@ def delete_question(request):
 							question_relations = Question.objects.filter(Q(pk=question_pk))
 							options_in_questions_relations = Option_in_question.objects.filter(Q(question=question_pk))
 							for _option in options_in_questions_relations:
-								
 								option_relation = Option.objects.filter(Q(pk=_option.option.pk))
 								option_relation.delete()
 							question_relations.delete()
@@ -143,4 +142,44 @@ def delete_question(request):
 				return Response("No such quiz found in the course", status=status.HTTP_400_BAD_REQUEST)
 			return Response("quiz_pk should not be empty",status=status.HTTP_400_BAD_REQUEST)
 		return Response("You are not Professor in the course",status=status.HTTP_401_UNAUTHORIZED)
+	return Response(util_data["error_message"], status=util_data["status"])
+
+@api_view(["GET"])
+def view_quiz_questions(request,course_pk, quiz_pk):
+	user = getUser(request)
+	# print(user)
+	util_data,course = user_in_course_details(user,course_pk)
+	if util_data["allowed"]:
+		quiz_in_course_relations = quiz_in_course.objects.filter(Q(course=course) & Q(quiz=quiz_pk)).distinct()
+		# print(quiz_in_course_relations)
+		if len(quiz_in_course_relations)==1:
+			quiz_data = {
+				"title":quiz_in_course_relations[0].quiz.title,
+				"content":quiz_in_course_relations[0].quiz.content,
+				"start_at":quiz_in_course_relations[0].quiz.start_at,
+				"deadline":quiz_in_course_relations[0].quiz.deadline,
+				"questions":[]
+			}
+			question_relation = question_in_quiz.objects.filter(Q(quiz=quiz_pk))
+			for _ques in question_relation:
+				_current_question_data = {
+					"question_pk":_ques.question.pk,
+					"content":_ques.question.content,
+					"question_type":_ques.question.question_type, 
+					"positive_marks":_ques.question.positive_marks,
+					"negative_marks":_ques.question.negative_marks,
+					"partial_allowed":_ques.question.partial_allowed
+				}
+				if _ques.question.question_type=="M" or _ques.question.question_type=="S":
+					_current_question_data["options"] = []
+					options_in_questions_relations = Option_in_question.objects.filter(Q(question=_ques.question.pk))
+					for _option in options_in_questions_relations:
+						_curent_option_data = {
+							"option_value":_option.option.option_value,
+							"option_pk":_option.option.pk
+						}
+						_current_question_data["options"].append(_curent_option_data)
+				quiz_data["questions"].append(_current_question_data)
+			return Response(quiz_data,status=status.HTTP_200_OK)
+		return Response("No such quiz found in the course", status=status.HTTP_400_BAD_REQUEST)
 	return Response(util_data["error_message"], status=util_data["status"])
