@@ -43,6 +43,28 @@ def add_quiz(request):
 		return Response("You are not Professor in the course",status=status.HTTP_401_UNAUTHORIZED)
 	return Response(util_data["error_message"], status=util_data["status"])
 
+@api_view(["GET"])
+def quiz_in_a_course_list(request,course_pk):
+	user = getUser(request)
+	util_data,course = user_in_course_details(user,course_pk)
+	if util_data["allowed"]:
+		quiz_in_course_relations = quiz_in_course.objects.filter(Q(course=course_pk))
+		course_data = {
+			"quiz_list" : []
+		}
+		for i in quiz_in_course_relations:
+			_current_quiz_data = {
+				"pk":i.quiz.pk,
+				"title":i.quiz.title,
+				"content":i.quiz.content,
+				"deadline":i.quiz.deadline,
+				"start_at":i.quiz.start_at,	
+			}
+			course_data["quiz_list"].append(_current_quiz_data)
+		return Response(course_data,status=status.HTTP_200_OK)
+	return Response(util_data["error_message"], status=util_data["status"])
+
+
 @api_view(["POST"])
 def add_question(request):
 	user = getUser(request)
