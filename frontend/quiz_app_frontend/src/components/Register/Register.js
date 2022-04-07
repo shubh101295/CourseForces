@@ -45,7 +45,7 @@ class Register extends React.Component {
       body: JSON.stringify({
         name: this.state.name,
         username: this.state.username,
-        department: "CSE",
+        department: this.state.department,
         email: this.state.email,
         password: this.state.password,
         confirm_password: this.state.confirm_password
@@ -102,7 +102,7 @@ class Register extends React.Component {
                   type="text"
                   name="name"
                   id="name"
-                  onChange={this.onNameChange}
+                  onChange={this.onDeptChange}
                 />
               </div>
               <div className="mt2">

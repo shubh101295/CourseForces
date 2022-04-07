@@ -15,7 +15,7 @@ import CreateCourse from "./components/CreateCourse/CreateCourse";
 import CreateQuestions from "./components/CreateQuestions/CreateQuestions";
 import QuizInfoPage from "./components/QuizInfoPage/QuizInfoPage";
 import {particlesOptions} from './ParticlesProps.js'
-import {courses} from './Courses'
+// import {courses} from './Courses'
 import {quizzes} from './quizzes'
 import {students} from './students'
 import {questions} from './questions'
@@ -29,9 +29,9 @@ const initialState = {
     username: '',
     email: '',
     department: '',
-    role: 'Teacher'   // Add as required
   },
   course_page: {
+    role: '' ,  
     displayed_course: ''
   },
   quiz_page: {
@@ -39,8 +39,11 @@ const initialState = {
   },
   invite_page: {
     input: ''
-  }
+  },
+  courses: [],
+  quizzes: []
 }
+
 class App extends Component{
 
   constructor(){
@@ -56,9 +59,41 @@ class App extends Component{
       username: data.username,
       email: data.email,
       department: data.department,
-      role: ''
     }})
+
+    fetch('http://127.0.0.1:8000/courses/my/list/', {
+      method: 'get',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': this.state.user.token
+      },
+    })
+      .then(response => {
+        if(response.status === 200){
+          alert("Course List Fetched!")
+          return response.json()
+        }
+        else{
+          throw new Error(response.status)
+        }
+      })
+      .then(data => {
+        let temp = []
+        for (var i = 0; i < data.length; i++) {
+          temp.push(data[i].course)
+        }
+        this.setState({
+          courses:temp 
+        });
+      })
+      .catch(error => {
+        alert("Something's wrong, an error occured :(")
+        alert(error)
+      })
+
   }
+
+
 
   onInputChange = (event) => {
     this.setState({
@@ -70,6 +105,16 @@ class App extends Component{
 
   onRouteChange = (route) => {
     if (route === 'signout') {
+      fetch('http://127.0.0.1:8000/users/auth/logout/', {
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': this.state.user.token
+      },
+    })
+      .then(response => {
+        alert(response.status);
+      })
       this.setState(initialState)
       return
     } else if (route === 'home') {
@@ -102,17 +147,17 @@ class App extends Component{
           id="tsparticles"
           options={particlesOptions}
         />
-          <Navigation name={this.state.user.name} isSignedIn={this.state.isSignedIn} onRouteChange={this.onRouteChange} />
+          <Navigation name={this.state.user.username} isSignedIn={this.state.isSignedIn} onRouteChange={this.onRouteChange} />
           <Logo isSignedIn={this.state.isSignedIn} onRouteChange = {this.onRouteChange}/>
           {
             this.state.route==='signin'
             ? <SignIn onRouteChange={this.onRouteChange} loadUser={this.loadUser}/>
             : this.state.route==='home' 
-            ? <CardList onCourseSelect={this.onCourseSelect} role={this.state.user.role} courses = {courses} onRouteChange={this.onRouteChange} />
+            ? <CardList onCourseSelect={this.onCourseSelect} role={this.state.course_page.role} courses = {this.state.courses} onRouteChange={this.onRouteChange} />
             : this.state.route==='register'
             ? <Register onRouteChange={this.onRouteChange} />
             : this.state.route==='CoursePage'
-            ? <QuizList onRouteChange={this.onRouteChange} course_code={this.state.course_page.displayed_course} role={this.state.user.role} quizzes = {quizzes} />
+            ? <QuizList onRouteChange={this.onRouteChange} course_code={this.state.course_page.displayed_course} role={this.state.course_page.role} quizzes = {quizzes} />
             : this.state.route==='StudentList'
             ? <StudentList course_code={this.state.course_page.displayed_course} onRouteChange={this.onRouteChange} students={students}/>
             : this.state.route==='InviteForm'
@@ -126,7 +171,7 @@ class App extends Component{
             : this.state.route === 'QuestionList'
             ? <QuestionList quiz={quizzes[this.state.quiz_page.displayed_quiz]} questions={questions} onRouteChange={this.onRouteChange} />
             : this.state.route==='CreateCourse'
-            ? <CreateCourse onRouteChange={this.onRouteChange} />
+            ? <CreateCourse onRouteChange={this.onRouteChange} data={this.state.user} loadUser = {this.loadUser} />
             : <p> Component not yet created! </p>
           }
         </div>
