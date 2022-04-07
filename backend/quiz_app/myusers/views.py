@@ -101,7 +101,11 @@ def user_login(request):
 						return Response(
 							{
 								"message":"Successfully logged in",
-								"token":code
+								"token":code,
+								"name":users[0].name,
+								"username":users[0].username,
+								"department":users[0].department,
+								"email":users[0].email
 							}, status=status.HTTP_200_OK)
 					return Response("Wrong Password" ,status=status.HTTP_401_UNAUTHORIZED)
 				return Response("First activate the user to " ,status=status.HTTP_200_OK) 
