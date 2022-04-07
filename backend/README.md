@@ -111,7 +111,7 @@ Headers should contain "Authorization" field which stores the token
 Input format = {
 	"course_pk":<int>,
 	"send_to_user":<string username of the >,
-	"offered_year":<string>
+	"join_as_role":"S" or "P" 
 }
 
 ```
@@ -176,4 +176,209 @@ Output format
         "verification_code": null
     }
 ]
+```
+
+### Quiz
+
+```
+Route - /quiz/add/
+Task - It adds a quiz in a particular course
+Headers should contain "Authorization" field which stores the token
+METHOD - POST
+
+Input Format = {
+    "title":<string>,
+    "content":<string>,
+    "course_pk":<int>,
+    "deadline":<YYYY-MM-DDThh:mm>,
+    "start_at":<YYYY-MM-DDThh:mm>
+}
+
+On success
+{
+    "quiz_pk": 12, # it here is the integer which is returned 
+    "message": "Succesully created Quiz"
+}
+```
+
+```
+Route - /quiz/view/<int:course_pk>/
+Task - It return the list of quiz in a particular course
+Headers should contain "Authorization" field which stores the token
+METHOD - GET
+
+Input Format = {}
+
+Output 
+{
+    "quiz_list": [
+        {
+            "pk": 12,
+            "title": "Quiz 1 in CS315",
+            "content": "Please score positive",
+            "deadline": "2022-12-12T11:11:00Z",
+            "start_at": "2022-12-12T11:11:00Z"
+        },
+        ......
+    ],
+    "message": "ok"
+}
+```
+
+```
+Route - /quiz/question/add/
+Task - It adds a question to quiz in a particular course
+Headers should contain "Authorization" field which stores the token
+METHOD - POST
+
+Input Format = {
+    "course_pk":<int>,
+    "quiz_pk":<int>,
+    "content":<string>,
+    "answer":<string>, # empty in case of MCQ and MSQ
+    "positive_marks":<float>,
+    "negative_marks":<float>,
+    "question_type": "S", "M" or "F"
+    ## ("S" , "MCQ Single Correct"),
+    ##  ("M" , "MCQ Multi Correct"),
+    ##  ("F" , "Fill in the blank") 
+    "partial_allowed":<boolean>,
+    
+    ## following only in case of MCQ and MSQ
+    "options":[
+        {
+            "option_value":<string>,
+            "is_correct":<bool>
+        }
+        ....
+        {
+            "option_value":<string>,
+            "is_correct":<bool>
+        }
+    ]
+}
+
+
+eg 1 
+
+{
+    "content":"This is Q2",
+    "course_pk":5,
+    "quiz_pk":12,
+    "question_type":"S",
+    "positive_marks":2.0,
+    "negative_marks":0.5,
+    "partial_allowed":false,   
+    "answer":"",
+    "options":[
+        {
+            "option_value":"yes",
+            "is_correct":true
+        },
+        {
+            "option_value":"no",
+            "is_correct":false
+        }
+    ]
+}
+
+
+
+eg2
+
+{
+    "content":"This is Q4",
+    "course_pk":5,
+    "quiz_pk":12,
+    "question_type":"F",
+    "positive_marks":2.0,
+    "negative_marks":0.5,
+    "partial_allowed":false,   
+    "answer":"No"
+    
+}
+
+On success
+{
+    "question_pk": 12, # it here is the integer which is returned 
+    "message": "Succesully created Question"
+}
+
+```
+
+```
+Route - /quiz/question/delete/
+Task - It deletes a question to quiz in a particular course
+Headers should contain "Authorization" field which stores the token
+METHOD - DELETE
+
+Input Format = {
+    "course_pk":<int>,
+    "quiz_pk":<int>,
+    "question_pk":<int>
+}
+
+On success
+{
+    "message": "Succesfully deleted the question"
+}
+```
+
+```
+Route - /quiz/view/<int:course_pk>/<int:quiz_pk>/
+Task - It lists all the question in the course
+
+Headers should contain "Authorization" field which stores the token
+METHOD - POST
+
+Input Format = {
+    "course_pk":<int>,
+    "quiz_pk":<int>
+}
+
+
+Output format
+
+{
+    "title": "Quiz 1 in CS315",
+    "content": "Please score positive",
+    "start_at": "2022-12-12T11:11:00Z",
+    "deadline": "2022-12-12T11:11:00Z",
+    "questions": [
+        {
+            "question_pk": 12,
+            "content": "This is Q1",
+            "question_type": "F",
+            "positive_marks": 2.0,
+            "negative_marks": 0.5,
+            "partial_allowed": false
+        },
+        {
+            "question_pk": 13,
+            "content": "This is Q2",
+            "question_type": "S",
+            "positive_marks": 2.0,
+            "negative_marks": 0.5,
+            "partial_allowed": false,
+            "options": [
+                {
+                    "option_value": "yes",
+                    "option_pk": 35
+                },
+                {
+                    "option_value": "no",
+                    "option_pk": 36
+                }
+            ]
+        },
+        {
+            "question_pk": 14,
+            "content": "This is Q4",
+            "question_type": "F",
+            "positive_marks": 2.0,
+            "negative_marks": 0.5,
+            "partial_allowed": false
+        }
+    ]
+}
 ```
