@@ -29,22 +29,21 @@ class Signin extends React.Component {
         password: this.state.signInPassword
       })
     })
-      // .then((response)=>alert(response))
-      .then(response => response.json())
-      .then(user => {
-        if (user.message === "Successfully logged in") {
-          alert("Hehe login ho gaya")
-          alert(user.token)
-          this.props.loadUser(user)
-          this.props.onRouteChange('home');
-          alert("Route changed to home!");
-        }
-        if(user.message==="User is already logged in") {
-           alert("Hehe login nhi hua")
-          // alert(user.token)
+      .then(response => {
+        if(response.status === 200 )
+          return response.json();
+        else{
+          alert("Wrong Email/Password!")
+          throw new Error(response.status);
         }
       })
-    // this.props.onRouteChange('home');
+      .then(user => {
+          this.props.loadUser(user)
+          this.props.onRouteChange('home');
+      })
+      .catch((error) => {
+        console.log('Error: '+ error)
+      })
   }
 
   render() {

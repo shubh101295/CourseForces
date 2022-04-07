@@ -24,7 +24,9 @@ const initialState = {
   route: 'signin',
   isSignedIn: false,
   user: {
+    token: '',
     name: '',
+    username: '',
     email: '',
     department: '',
     role: 'Teacher'   // Add as required
@@ -48,9 +50,12 @@ class App extends Component{
 
   loadUser = (data) => {
     this.setState({user:{
+      token: data.token,
       name: data.name,
+      username: data.username,
       email: data.email,
-      department: data.department
+      department: data.department,
+      role: ''
     }})
   }
 
