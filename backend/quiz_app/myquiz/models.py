@@ -20,7 +20,7 @@ class Question(models.Model):
 	content = models.CharField(max_length=200 )
 	answer = models.CharField(max_length=100, blank=True)	
 	question_type_options = [
-		("B" , "Boolean Type"),
+		# ("B" , "Boolean Type"),
 		("S" , "MCQ Single Correct"),
 		("M" , "MCQ Multi Correct"),
 		("F" , "Fill in the blank") 
@@ -43,7 +43,7 @@ class Option_in_question(models.Model):
 
 class QuizAttempt(models.Model):
 	submitted = models.BooleanField(default=False) # for saving the quiz
-	submission_time = models.DateTimeField(auto_now=False, auto_now_add=False)
+	submission_time = models.DateTimeField(auto_now=True, auto_now_add=False)
 	total_marks =  models.FloatField(default=0.0)
 
 class user_quizattempt(models.Model):

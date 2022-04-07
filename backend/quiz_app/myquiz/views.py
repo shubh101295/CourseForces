@@ -205,3 +205,71 @@ def view_quiz_questions(request,course_pk, quiz_pk):
 			return Response(quiz_data,status=status.HTTP_200_OK)
 		return Response("No such quiz found in the course", status=status.HTTP_400_BAD_REQUEST)
 	return Response(util_data["error_message"], status=util_data["status"])
+
+@api_view(["DELETE"])
+def make_a_quiz_submission(request):
+	user = getUser(request)
+	util_data,course = user_in_course_details(user,request.data.get("course_pk",""))
+	if util_data["allowed"]:
+		if util_data["relation"] == 'S': 
+			quiz_pk = request.data.get("quiz_pk", "")
+			if quiz_pk!="":
+				quiz_in_course_relations = quiz_in_course.objects.filter(Q(course=course) & Q(quiz=quiz_pk))
+				if len(quiz_in_course_relations)==1:
+					question_relation = question_in_quiz.objects.filter(Q(quiz=quiz_pk))
+					question_data = {}
+					for i in question_relation:
+						_quiz = i.question
+						question_data[_ques.pk] =  {
+							"question_type":_ques.question_type
+						}
+						if _ques.question_type=="M" or _ques.question_type=="S":
+							question_data[_ques.pk]["options"] = []
+							_ques_options = Option_in_question.objects.filter(Q(question=_ques))
+							for _option in _ques_options:
+								question_data[_ques.pk]["options"].append(_option.option.pk)
+
+					question_attemps = []
+					for _ques_response in request.data.get("ques_response",[]):
+						if _ques_response.get("question_pk","") in question_data.keys() and "answer" in _ques_response:
+							_ques_data = question_data[_ques_response.get("question_pk","")]
+							if _ques_data.question_type=="M" or _ques_data.question_type=="S":
+								if isinstance(_ques_response["answer"],list):
+									for _selected_option_id in _ques_response["answer"]:
+										if _selected_option_id not in question_data["options"]:
+											return Response("Invalid option id sent",status=status.HTTP_400_BAD_REQUEST)
+									if _ques_data.question_type=="S" and len(_ques_response["answer"])>1:
+										return Response("Only one option can be selected in Single correct question",status=status.HTTP_400_BAD_REQUEST)
+									question_attempt.append(
+											{
+												"student_answer":";".join([str(x) for x in _ques_response["answer"]]),
+												"question":_ques_response.get("question_pk","")
+											}) 
+								else:
+									return Response("Answer to a single/multi correct question should be a list of ids of options selected", status=status.HTTP_400_BAD_REQUEST)
+							else:
+								question_attempt.append(
+									{
+										"student_answer":_ques_response["answer"],
+										"question":_ques_response.get("question_pk","")
+									}) 
+						else:
+							return Response("Found a question either not having question_pk or does not belong to the course or answer not given",status=status.HTTP_400_BAD_REQUEST)
+					quiz_attempt= QuizAttempt(submitted=request.data.get("submitted", False))
+					quiz_attempt_response = quiz_attempt.save()
+					_user_quizattempt = user_quizattempt(user=user,quiz_attempt=quiz_attempt_response)
+					_user_quizattempt.save()
+					_quiz_quizattempt = quiz_quizattempt(quiz=quiz_pk,quiz_attempt=quiz_attempt_response)
+					_quiz_quizattempt.save()
+					for q in question_attemps:
+						qa = question_attempt(question=q["question"],quiz_attempt=quiz_attempt_response,student_answer=q["student_answer"])
+						qa.save()
+					return Response({
+							"message":"Succesully saved/submitted the quiz response",
+							"quiz_attempt_pk":quiz_attempt_response.pk
+						},status=status.HTTP_200_OK)
+				return Response("No such quiz found in the course", status=status.HTTP_400_BAD_REQUEST)
+			return Response("quiz_pk should not be empty",status=status.HTTP_400_BAD_REQUEST)
+		return Response("You are not Student in the course",status=status.HTTP_401_UNAUTHORIZED)
+	return Response(util_data["error_message"], status=util_data["status"])
+
