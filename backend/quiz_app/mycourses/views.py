@@ -108,11 +108,11 @@ def view_my_courses(request):
 	if user is not None:
 		if user.verified == True:
 			courses = user_in_course.objects.filter(Q(user=user)).values()
-			# for i in range(len(courses)):
-			# 	my_course = courses[i]
-			# 	my_course["course"] = (Course.objects.filter(pk=courses[i]["course_id"]).values())[0]
-			# 	print(my_course)
-			# 	del my_course["course_id"]
+			for i in range(len(courses)):
+				my_course = courses[i]
+				my_course["course"] = (Course.objects.filter(pk=courses[i]["course_id"]).values())[0]
+				# print(my_course)
+				del my_course["course_id"]
 			return Response(courses,status=status.HTTP_200_OK)
 		return Response("First Activate your account", status=status.HTTP_400_BAD_REQUEST)
 	return Response("No user is logged in ", status=status.HTTP_401_UNAUTHORIZED)
