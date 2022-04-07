@@ -49,6 +49,7 @@ class App extends Component{
   }
 
   loadUser = (data) => {
+    alert("Entered loadUser",data)
     this.setState({user:{
       token: data.token,
       name: data.name,
@@ -105,7 +106,7 @@ class App extends Component{
           <Logo isSignedIn={this.state.isSignedIn} onRouteChange = {this.onRouteChange}/>
           {
             this.state.route==='signin'
-            ? <SignIn onRouteChange={this.onRouteChange}/>
+            ? <SignIn onRouteChange={this.onRouteChange} loadUser={this.loadUser}/>
             : this.state.route==='home' 
             ? <CardList onCourseSelect={this.onCourseSelect} role={this.state.user.role} courses = {courses} onRouteChange={this.onRouteChange} />
             : this.state.route==='register'

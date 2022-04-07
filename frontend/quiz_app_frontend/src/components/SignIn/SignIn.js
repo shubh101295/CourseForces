@@ -30,19 +30,22 @@ class Signin extends React.Component {
       })
     })
       .then(response => {
-        if(response.status === 200 )
-          return response.json();
+        return response.json()
+      })
+      .then(response => {
+        if(response.message === "Successfully logged in" )
+          return response;
         else{
-          alert("Wrong Email/Password!")
-          throw new Error(response.status);
+          throw new Error(response.message);
         }
       })
       .then(user => {
+          alert("Heheh", user.token);
           this.props.loadUser(user)
           this.props.onRouteChange('home');
       })
       .catch((error) => {
-        console.log('Error: '+ error)
+        alert(error)
       })
   }
 

@@ -4,15 +4,21 @@ class Register extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      name: '',
+      username: '',
+      department: 'CSE',
       email: '',
       password: '',
-      name: '',
-      role: ''
+      confirm_password: ''
     }
   }
 
   onNameChange = (event) => {
     this.setState({name: event.target.value})
+  }
+
+  onUserNameChange = (event) => {
+    this.setState({username: event.target.value})
   }
 
   onEmailChange = (event) => {
@@ -23,25 +29,41 @@ class Register extends React.Component {
     this.setState({password: event.target.value})
   }
 
-  onRoleChange = (event) => {
-    this.setState({role: event.target.value})
+  onDeptChange = (event) => {
+    this.setState({department: event.target.value})
   }
+
+  onCnfPasswordChange = (event) => {
+    this.setState({confirm_password: event.target.value})
+  }
+
+  
   onSubmitSignIn = () => {
-    fetch('http://localhost:3000/register', {
+    fetch('http://127.0.0.1:8000/users/register/', {
       method: 'post',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
+        name: this.state.name,
+        username: this.state.username,
+        department: "CSE",
         email: this.state.email,
         password: this.state.password,
-        name: this.state.name
+        confirm_password: this.state.confirm_password
       })
     })
-      .then(response => response.json())
-      .then(user => {
-        if (user.id) {
-          this.props.loadUser(user)
-          this.props.onRouteChange('home');
+      .then(response => {
+        if(response.status === 200){
+          alert("User Registered Successfully!")
+          this.props.onRouteChange('signin')
+          return response.json()
         }
+        else{
+          throw new Error(response.status)
+        }
+      })
+      .catch(error => {
+        alert("Something's wrong, an error occured :(")
+        console.log("Error: "+error);
       })
   }
 
@@ -55,6 +77,26 @@ class Register extends React.Component {
               <legend className="f1 fw6 ph0 mh0">Register</legend>
               <div className="mt2">
                 <label className="db fw6 lh-copy f6" htmlFor="name">Name</label>
+                <input
+                  className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
+                  type="text"
+                  name="name"
+                  id="name"
+                  onChange={this.onNameChange}
+                />
+              </div>
+              <div className="mt2">
+                <label className="db fw6 lh-copy f6" htmlFor="name">Username</label>
+                <input
+                  className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
+                  type="text"
+                  name="name"
+                  id="name"
+                  onChange={this.onUserNameChange}
+                />
+              </div>
+              <div className="mt2">
+                <label className="db fw6 lh-copy f6" htmlFor="name">Department</label>
                 <input
                   className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
                   type="text"
@@ -83,16 +125,18 @@ class Register extends React.Component {
                   onChange={this.onPasswordChange}
                 />
               </div>
+              <div className="mt2">
+                <label className="db fw6 lh-copy f6" htmlFor="password">Confirm Password</label>
+                <input
+                  className="b pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
+                  type="password"
+                  name="password"
+                  id="password"
+                  onChange={this.onCnfPasswordChange}
+                />
+              </div>
             </fieldset>
-            <div className="mt2">
-              <label className="db fw6 lh-copy f6" htmlFor="role">Role</label>
-              <select onChange={this.onRoleChange} id="types" class="w-100 db h2 f6 bg-transparent ba" name="">
-                <option label="Student" value="Student">
-                </option>
-                <option label="Teacher" value="Teacher">
-                </option>
-              </select>
-            </div>
+            
             <div className="mt4">
               <input
                 onClick={this.onSubmitSignIn}

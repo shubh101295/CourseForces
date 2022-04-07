@@ -31,6 +31,7 @@ def pass_checker(old,password):
 
 @api_view(["POST"])
 def user_register(request):
+	print(request.data)
 	register_data ={}
 	register_data["name"] = request.data.get("name","")
 	register_data["username"] = request.data.get("username","")
@@ -107,10 +108,10 @@ def user_login(request):
 								"department":users[0].department,
 								"email":users[0].email
 							}, status=status.HTTP_200_OK)
-					return Response("Wrong Password" ,status=status.HTTP_401_UNAUTHORIZED)
-				return Response("First activate the user to " ,status=status.HTTP_200_OK) 
-			return Response("There is no user registered with "+ value + " username/email" , status=status.HTTP_400_BAD_REQUEST)
-		return Response("Email/username field should be non empty", status=status.HTTP_400_BAD_REQUEST)
+					return Response({"message" : "Wrong Password"} ,status=status.HTTP_401_UNAUTHORIZED)
+				return Response({"message":"First activate the user."} ,status=status.HTTP_400_BAD_REQUEST) 
+			return Response({"message":"There is no user registered with "}+ value + " username/email" , status=status.HTTP_400_BAD_REQUEST)
+		return Response({"message":"Email/username field should be non empty"}, status=status.HTTP_400_BAD_REQUEST)
 	return Response({"message":"User is already logged in"} , status=status.HTTP_403_FORBIDDEN)
 
 
