@@ -99,6 +99,15 @@ def user_login(request):
 								serializer.save()
 								break
 							print(serializer.errors)
+						x = {
+							"message":"Successfully logged in",
+							"token":code,
+							"name":users[0].name,
+							"username":users[0].username,
+							"department":users[0].department,
+							"email":users[0].email
+						}
+						print(x)
 						return Response(
 							{
 								"message":"Successfully logged in",
