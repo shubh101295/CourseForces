@@ -99,6 +99,15 @@ def user_login(request):
 								serializer.save()
 								break
 							print(serializer.errors)
+						x = {
+							"message":"Successfully logged in",
+							"token":code,
+							"name":users[0].name,
+							"username":users[0].username,
+							"department":users[0].department,
+							"email":users[0].email
+						}
+						print(x)
 						return Response(
 							{
 								"message":"Successfully logged in",
@@ -117,6 +126,7 @@ def user_login(request):
 
 @api_view(["POST"])
 def user_logout(request):
+	print("Heheheh")
 	user = getUser(request)
 	if user is not None:
 		token = hashSHA256(request.headers["Authorization"])

@@ -40,7 +40,6 @@ class Signin extends React.Component {
         }
       })
       .then(user => {
-          alert("Heheh", user.token);
           this.props.loadUser(user)
           this.props.onRouteChange('home');
       })

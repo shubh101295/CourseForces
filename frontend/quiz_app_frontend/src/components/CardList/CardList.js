@@ -18,11 +18,8 @@ const CardList = (props) => {
   return (
     <div>
       {allCards}
-      {
-        props.role==='Teacher'
-        ? <Add text="Course" onRouteChange={props.onRouteChange} route="CreateCourse" />
-        : < div />
-      }
+      <Add text="Course" onRouteChange={props.onRouteChange} route="CreateCourse" />
+      
     </div>
   );
 }
