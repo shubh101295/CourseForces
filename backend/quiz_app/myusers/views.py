@@ -126,6 +126,7 @@ def user_login(request):
 
 @api_view(["POST"])
 def user_logout(request):
+	print("Heheheh")
 	user = getUser(request)
 	if user is not None:
 		token = hashSHA256(request.headers["Authorization"])
