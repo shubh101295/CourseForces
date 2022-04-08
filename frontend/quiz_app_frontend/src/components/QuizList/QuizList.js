@@ -8,7 +8,9 @@ const QuizList = (props) => {
             <React.Fragment>
             <Quiz
               onRouteChange={props.onRouteChange}
-              key={i}
+              key={props.quizzes[i].pk}
+              idx={i}
+              loadQuizInfo = {props.loadQuizInfo}
               quiz_title={props.quizzes[i].quiz_title}
               />
               </React.Fragment>

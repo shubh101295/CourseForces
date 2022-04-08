@@ -18,7 +18,7 @@ import {particlesOptions} from './ParticlesProps.js'
 // import {courses} from './Courses'
 // import {quizzes} from './quizzes'
 // import {students} from './students'
-import {questions} from './questions'
+// import {questions} from './questions'
 
 const initialState = {
   route: 'signin',
@@ -46,7 +46,8 @@ const initialState = {
   courses: [],
   roles: [],
   quizzes: [],
-  students: []
+  students: [],
+  questions: []
 }
 
 class App extends Component{
@@ -277,6 +278,48 @@ class App extends Component{
       this.onRouteChange('CoursePage')
   }
 
+  loadQuestions = () => {
+      fetch(`http://127.0.0.1:8000/quiz/view/${this.state.courses[this.state.course_page.idx].id}/${this.state.quiz_page.pk}/`, {
+      method: 'get',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': this.state.user.token
+      },
+    })
+    .then(response =>{
+      if(response.status===200)
+        return response.json()
+      else
+        throw new Error(response.status)
+    })
+    .then(data => {
+      let temp = []
+      for (var i = 0; i < data.questions.length; i++) {
+        temp.push(data.questions[i])
+      }
+      this.setState({
+        questions:temp 
+      });
+    })
+    .catch(error=>{
+      alert(error)
+    })
+
+    this.onRouteChange("QuestionList")
+  }
+
+  loadQuizInfo = (idx) => {
+    this.setState({
+      quiz_page: {
+        displayed_quiz: idx,
+        pk : this.state.quizzes[idx].pk,
+        num : this.state.quizzes[idx].num
+      } 
+    });
+
+    this.onRouteChange('QuizInfoPage')
+  }
+
   onAnswerChange = (key) => {
 
   }
@@ -297,7 +340,7 @@ class App extends Component{
             : this.state.route==='register'
             ? <Register onRouteChange={this.onRouteChange} />
             : this.state.route==='CoursePage'
-            ? <QuizList loadStudents = {this.loadStudents} onRouteChange={this.onRouteChange} course_code={this.state.course_page.displayed_course} role={this.state.course_page.role} quizzes = {this.state.quizzes} />
+            ? <QuizList loadQuizInfo = {this.loadQuizInfo} loadStudents = {this.loadStudents} onRouteChange={this.onRouteChange} course_code={this.state.course_page.displayed_course} role={this.state.course_page.role} quizzes = {this.state.quizzes} />
             : this.state.route==='StudentList'
             ? <StudentList course_code={this.state.course_page.displayed_course} onRouteChange={this.onRouteChange} students={this.state.students}/>
             : this.state.route==='InviteForm'
@@ -307,9 +350,9 @@ class App extends Component{
             : this.state.route==='CreateQuestions'
             ? <CreateQuestions loadQuizzes={this.loadQuizzes} quiz_pk = {this.state.quiz_page.pk}  course_pk = {this.state.courses[this.state.course_page.idx].id} token = {this.state.user.token} onRouteChange={this.onRouteChange} num={this.state.quiz_page.num} />
             : this.state.route==='QuizInfoPage'
-            ? <QuizInfoPage quiz={this.state.quizzes[this.state.quiz_page.displayed_quiz]} onRouteChange={this.onRouteChange} />
+            ? <QuizInfoPage loadQuestions={this.loadQuestions} quiz={this.state.quizzes[this.state.quiz_page.displayed_quiz]} onRouteChange={this.onRouteChange} />
             : this.state.route === 'QuestionList'
-            ? <QuestionList quiz={this.state.quizzes[this.state.quiz_page.displayed_quiz]} questions={questions} onRouteChange={this.onRouteChange} />
+            ? <QuestionList quiz={this.state.quizzes[this.state.quiz_page.displayed_quiz]} questions={this.state.questions} onRouteChange={this.onRouteChange} />
             : this.state.route==='CreateCourse'
             ? <CreateCourse onRouteChange={this.onRouteChange} data={this.state.user} loadUser = {this.loadUser} />
             : <p> Component not yet created! </p>
