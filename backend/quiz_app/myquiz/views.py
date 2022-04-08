@@ -55,6 +55,7 @@ def quiz_in_a_course_list(request,course_pk):
 		course_data = {
 			"quiz_list" : []
 		}
+		j = 0 
 		for i in quiz_in_course_relations:
 			_current_quiz_data = {
 				"pk":i.quiz.pk,
@@ -62,7 +63,9 @@ def quiz_in_a_course_list(request,course_pk):
 				"content":i.quiz.content,
 				"deadline":i.quiz.deadline,
 				"start_at":i.quiz.start_at,	
+				"index":j
 			}
+			j+=1
 			course_data["quiz_list"].append(_current_quiz_data)
 		course_data["message"]="ok"
 		return Response(course_data,status=status.HTTP_200_OK)
