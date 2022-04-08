@@ -249,7 +249,7 @@ class App extends Component{
             : this.state.route==='InviteForm'
             ? <InviteForm sendInvite = {this.sendInvite} onInputChange={this.onInputChange} course_code={this.state.course_page.displayed_course} onRouteChange={this.onRouteChange} />
             : this.state.route==='CreateQuiz'
-            ? <CreateQuiz course_pk = {this.state.courses[this.state.course_page.idx].id} onRouteChange={this.onRouteChange} />
+            ? <CreateQuiz token = {this.state.user.token} course_pk = {this.state.courses[this.state.course_page.idx].id} onRouteChange={this.onRouteChange} />
             : this.state.route==='CreateQuestions'
             ? <CreateQuestions onRouteChange={this.onRouteChange} num={2} />
             : this.state.route==='QuizInfoPage'

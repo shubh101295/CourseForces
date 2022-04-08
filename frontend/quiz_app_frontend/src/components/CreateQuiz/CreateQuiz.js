@@ -34,12 +34,11 @@ class CreateQuiz extends React.Component {
   onSubmit = () => {
   	// Send to backend, route to CreateQuestions
   	alert("Here!")
-  	alert(this.props.course_pk)
 	fetch('http://127.0.0.1:8000/quiz/add/', {
       method: 'post',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': this.state.user.token
+        'Authorization': this.props.token
       },
       body: JSON.stringify({
       	title : this.state.title,
