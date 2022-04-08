@@ -79,15 +79,15 @@ def send_request(request):
 													name2=user.username,course_name=course.course_name,role=roll_full_form(request.data.get("join_as_role",""))) \
 													+EMAIL_BASE_LINK_COURSE_JOINING +"code=" + code +"/" 
 									send_mail(EMAIL_TITLE["COURSE_JOIN_REQUEST"].format(course_code=course.course_code) , content , DEFAULT_FROM_EMAIL , [my_user.email])
-									return Response("User has been invited to the course",status=status.HTTP_200_OK)
-								return Response("Invalid role.Not allowed",status= status.HTTP_400_BAD_REQUEST)
-							return Response("Already sent the join request to the user" ,status= status.HTTP_400_BAD_REQUEST)	
-						return Response("No such user exists to send the request to" ,status= status.HTTP_400_BAD_REQUEST)
-					return Response("User is not Professor , does not have join request sending access" , status=status.HTTP_401_UNAUTHORIZED)
-				return Response("User is not in the group , does not have join request sending access" , status=status.HTTP_401_UNAUTHORIZED)
-			return Response("No such course exists" ,status= status.HTTP_400_BAD_REQUEST)
-		return Response("First Activate your account", status=status.HTTP_400_BAD_REQUEST)
-	return Response("No user is logged in ", status=status.HTTP_401_UNAUTHORIZED)
+									return Response({ "message": "User has been invited to the course"},status=status.HTTP_200_OK)
+								return Response({ "message": "Invalid role.Not allowed"},status= status.HTTP_400_BAD_REQUEST)
+							return Response({ "message": "Already sent the join request to the user" },status= status.HTTP_400_BAD_REQUEST)	
+						return Response({ "message": "No such user exists to send the request to" },status= status.HTTP_400_BAD_REQUEST)
+					return Response({ "message": "User is not Professor , does not have join request sending access"} , status=status.HTTP_401_UNAUTHORIZED)
+				return Response({ "message": "User is not in the group , does not have join request sending access" }, status=status.HTTP_401_UNAUTHORIZED)
+			return Response({ "message": "No such course exists" },status= status.HTTP_400_BAD_REQUEST)
+		return Response({ "message": "First Activate your account"},status=status.HTTP_400_BAD_REQUEST)
+	return Response({ "message": "No user is logged in "}, status=status.HTTP_401_UNAUTHORIZED)
 
 @api_view(["GET"])
 def accept_course_join(request , code):
