@@ -125,8 +125,19 @@ def view_course_list(request,course_pk):
 		if len(course)==1:
 			current_user_in_course = user_in_course.objects.filter(Q(course=course_pk) & Q(user=user)).values()
 			if len(current_user_in_course)==1:
-				users_in_course = user_in_course.objects.filter(Q(course=course_pk)).values()
-				return Response(users_in_course,status=status.HTTP_200_OK)
+				users_in_course = user_in_course.objects.filter(Q(course=course_pk))
+				_data_to_send = []
+				for i in users_in_course:
+					print(i)
+					_data_to_send.append({
+							"user_id":i.user.id,
+							"role":i.role,
+							"request_accepted":i.request_accepted,
+							"username":i.user.username,
+							"name":i.user.name,
+							
+						})
+				return Response(_data_to_send,status=status.HTTP_200_OK)
 			return Response("User not in course", status=status.HTTP_401_UNAUTHORIZED)
 		return Response("No such course exists" ,status= status.HTTP_400_BAD_REQUEST)
 	return Response("No user is logged in ", status=status.HTTP_401_UNAUTHORIZED)
