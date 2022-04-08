@@ -160,23 +160,20 @@ METHOD - GET
 Output format
 [
     {
-        "id": 2,
-        "user_id": 15,
-        "course_id": 3,
-        "role": "S",
-        "request_accepted": true,
-        "verification_code": null
-    },
-    {
-        "id": 18,
         "user_id": 14,
-        "course_id": 3,
         "role": "P",
         "request_accepted": true,
-        "verification_code": null
+        "username": "agshubh",
+        "name": "Shubh"
+    },
+    {
+        "user_id": 18,
+        "role": "S",
+        "request_accepted": true,
+        "username": "shubh101295",
+        "name": "shubh1012"
     }
-]
-```
+]```
 
 ### Quiz
 
