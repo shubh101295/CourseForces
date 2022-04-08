@@ -68,6 +68,7 @@ def quiz_in_a_course_list(request,course_pk):
 			j+=1
 			course_data["quiz_list"].append(_current_quiz_data)
 		course_data["message"]="ok"
+		course_data["number_of_quiz"] = len(course_data["quiz_list"])
 		return Response(course_data,status=status.HTTP_200_OK)
 	return Response({"message":util_data["error_message"]}, status=util_data["status"])
 
