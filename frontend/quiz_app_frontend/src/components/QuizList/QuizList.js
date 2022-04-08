@@ -24,7 +24,7 @@ const QuizList = (props) => {
         <h1 className="helvetica f1 green i"> Enjoy your day!</h1>
         </div>
         : <div > 
-          <h1 className="f1 mid-gray helvetica"> Quizzes for {props.course_code} {props.role==='Teacher'? <button class="f6 link pointer br1 fr mr4 ph3 pv2 mb2 shadow-4 dib white bg-gray" onClick = {() => props.onRouteChange('StudentList')}  >View Course Users</button> : <div />} </h1>
+          <h1 className="f1 mid-gray helvetica"> Quizzes for {props.course_code} {props.role==='P'? <button class="f6 link pointer br1 fr mr4 ph3 pv2 mb2 shadow-4 dib white bg-gray" onClick = {() => props.onRouteChange('StudentList')}  >View Course Users</button> : <div />} </h1>
           {allCards}
           {
             props.role==='P'

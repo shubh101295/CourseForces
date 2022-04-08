@@ -31,7 +31,8 @@ const initialState = {
     department: '',
   },
   course_page: {
-    role: 'Proff' ,  
+    role: '' , 
+    idx: -1, 
     displayed_course: ''
   },
   quiz_page: {
@@ -132,6 +133,7 @@ class App extends Component{
     this.setState({
       course_page:{
         role: this.state.roles[idx],
+        idx: idx,
         displayed_course:this.state.courses[idx].course_code
       },
       route:'CoursePage'
@@ -169,8 +171,34 @@ class App extends Component{
 
   }
   sendInvite = () =>{
-    alert(this.state.invite_page.input);
+    let r = prompt(`Enter the role (S/P) you wish to invite ${this.state.invite_page.input} as:\n S: Student \n P: Professor`)
     // send to backend, and set route depending on received status
+    fetch(`http://127.0.0.1:8000/courses/join/request/send/`, {
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': this.state.user.token
+      },
+      body: JSON.stringify({
+        course_pk: this.state.courses[this.state.course_page.idx].id,
+        send_to_user: this.state.invite_page.input,
+        join_as_role: r
+      })
+    })
+      .then(response => {return response.json()})
+      .then(response => {
+        if(response.message === "User has been invited to the course"){
+          alert(response.message + "!")
+          this.onRouteChange("StudentList");
+        }
+        else{
+          throw new Error(response.message)
+        }
+      })
+      .catch(error => {
+        alert("Something's wrong, an error occured :(")
+        alert(error)
+      })
   }
 
   onAnswerChange = (key) => {

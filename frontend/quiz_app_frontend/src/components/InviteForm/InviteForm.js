@@ -5,7 +5,7 @@ const InviteForm = (props) => {
   return (
     <div className="ma5">
       <p className='f2 gray bold helvetica'>
-        {`To invite students to ${props.course_code}, enter their email/username below`}
+        {`To invite users to ${props.course_code}, enter their email/username below`}
       </p>
       <div className='center'>
         <div className='form center pa4 br3 shadow-5'>
