@@ -57,18 +57,17 @@ def quiz_in_a_course_list(request,course_pk):
 		}
 		j = 0 
 		for i in quiz_in_course_relations:
+			_current_quiz_questions = question_in_quiz.objects.filter(Q(quiz=i.quiz.pk))
 			_current_quiz_data = {
 				"pk":i.quiz.pk,
 				"title":i.quiz.title,
 				"content":i.quiz.content,
 				"deadline":i.quiz.deadline,
 				"start_at":i.quiz.start_at,	
-				"index":j
+				"num":len(_current_quiz_questions)
 			}
-			j+=1
 			course_data["quiz_list"].append(_current_quiz_data)
 		course_data["message"]="ok"
-		course_data["number_of_quiz"] = len(course_data["quiz_list"])
 		return Response(course_data,status=status.HTTP_200_OK)
 	return Response({"message":util_data["error_message"]}, status=util_data["status"])
 
