@@ -327,12 +327,9 @@ Route - /quiz/view/<int:course_pk>/<int:quiz_pk>/
 Task - It lists all the question in the quiz
 
 Headers should contain "Authorization" field which stores the token
-METHOD - POST
+METHOD - GET
 
-Input Format = {
-    "course_pk":<int>,
-    "quiz_pk":<int>
-}
+Input Format = {}
 
 
 Output format

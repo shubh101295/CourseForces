@@ -55,13 +55,16 @@ def quiz_in_a_course_list(request,course_pk):
 		course_data = {
 			"quiz_list" : []
 		}
+		j = 0 
 		for i in quiz_in_course_relations:
+			_current_quiz_questions = question_in_quiz.objects.filter(Q(quiz=i.quiz.pk))
 			_current_quiz_data = {
 				"pk":i.quiz.pk,
 				"title":i.quiz.title,
 				"content":i.quiz.content,
 				"deadline":i.quiz.deadline,
 				"start_at":i.quiz.start_at,	
+				"num":len(_current_quiz_questions)
 			}
 			course_data["quiz_list"].append(_current_quiz_data)
 		course_data["message"]="ok"
