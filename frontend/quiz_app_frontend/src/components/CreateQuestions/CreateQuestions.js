@@ -97,8 +97,8 @@ class CreateQuestions extends React.Component {
 			return
 		}
 		if (this.state.question_type==='S' || this.state.question_type === 'M') {
-			if (this.state.options.length===0 || this.state.answer.length===0) {
-				alert("Empty Input is invalid!")
+			if(this.state.question_type==='M' && this.state.options.length===0){
+				alert("Empty MSQ options!");
 				return
 			}
 		} 
@@ -125,8 +125,13 @@ class CreateQuestions extends React.Component {
 		var ans = "";
 		var options = [];
 		var correct = [false,false,false,false]
-		for (var i = 0; i < this.state.answer.length; i++) {
-			correct[this.state.answer[i]-1] = true
+		if (this.state.question_type==='S') {
+			correct[this.state.answer-1]=true;
+		}
+		else{
+			for (var i = 0; i < this.state.answer.length; i++) {
+				correct[this.state.answer[i]-1] = true
+			}
 		}
 		if (this.state.question_type === 'F') {
 			ans = this.state.answer;
@@ -139,6 +144,8 @@ class CreateQuestions extends React.Component {
 				})
 			}
 		}
+
+		alert(correct)
 
 		fetch('http://127.0.0.1:8000/quiz/question/add/', {
 	      method: 'post',
@@ -166,8 +173,9 @@ class CreateQuestions extends React.Component {
 	    		// What to do of Pk?
 	    		alert("Question Created!")
 	    	}
-	    	else
+	    	else{
 	    		throw new Error(response.message)
+	    	}
 	    })
 	    .catch(error => {
 	    	alert(error)

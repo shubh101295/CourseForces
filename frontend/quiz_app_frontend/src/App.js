@@ -264,10 +264,12 @@ class App extends Component{
         alert("Something's wrong, an error occured :(")
         alert(error)
       })
+
+      this.onRouteChange('CoursePage')
   }
 
   onAnswerChange = (key) => {
-
+    
   }
   render(){
     return (

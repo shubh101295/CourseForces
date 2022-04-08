@@ -13,12 +13,12 @@ class QuestionList extends React.Component {
 
 
 	onSubmit = () =>{
-		const today = new Date();
-		const time = today.getHours() + ':' + today.getMinutes() + ':' + today.getSeconds();
-		this.setState({
-			submitted: true,
-			submitted_time: time
-		})
+		// const today = new Date();
+		// const time = today.getHours() + ':' + today.getMinutes() + ':' + today.getSeconds();
+		// this.setState({
+		// 	submitted: true,
+		// 	submitted_time: time
+		// })
 
 		this.props.onRouteChange('CoursePage')
 
