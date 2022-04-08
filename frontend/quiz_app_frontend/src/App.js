@@ -17,7 +17,7 @@ import QuizInfoPage from "./components/QuizInfoPage/QuizInfoPage";
 import {particlesOptions} from './ParticlesProps.js'
 // import {courses} from './Courses'
 // import {quizzes} from './quizzes'
-import {students} from './students'
+// import {students} from './students'
 import {questions} from './questions'
 
 const initialState = {
@@ -224,13 +224,22 @@ class App extends Component{
     })
       .then(response => {
         if(response.status === 200){
-          alert("Quiz List Fetched!")
+          alert("Student List Fetched!")
           return response.json()
         }
         else{
           throw new Error(response.status)
         }
       })
+    .then(data => {
+      let temp = []
+      for (var i = 0; i < data.length; i++) {
+        temp.push(data[i])
+      }
+      this.setState({
+        students:temp, 
+      });
+    })
     this.onRouteChange("StudentList")
   }
 
@@ -269,7 +278,7 @@ class App extends Component{
   }
 
   onAnswerChange = (key) => {
-    
+
   }
   render(){
     return (
@@ -290,7 +299,7 @@ class App extends Component{
             : this.state.route==='CoursePage'
             ? <QuizList loadStudents = {this.loadStudents} onRouteChange={this.onRouteChange} course_code={this.state.course_page.displayed_course} role={this.state.course_page.role} quizzes = {this.state.quizzes} />
             : this.state.route==='StudentList'
-            ? <StudentList course_code={this.state.course_page.displayed_course} onRouteChange={this.onRouteChange} students={students}/>
+            ? <StudentList course_code={this.state.course_page.displayed_course} onRouteChange={this.onRouteChange} students={this.state.students}/>
             : this.state.route==='InviteForm'
             ? <InviteForm sendInvite = {this.sendInvite} onInputChange={this.onInputChange} course_code={this.state.course_page.displayed_course} onRouteChange={this.onRouteChange} />
             : this.state.route==='CreateQuiz'

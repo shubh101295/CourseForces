@@ -8,7 +8,8 @@ const StudentList = (props) => {
               <div className="measure center">
               <React.Fragment className="dt w-100 bb b--black-05 pb2 mt2">
               <Student
-                key={i}
+                key={props.students[i].user_id}
+                role = {props.students[i].role}
                 name={props.students[i].name}
                 username={props.students[i].username}
                 />

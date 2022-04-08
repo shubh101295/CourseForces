@@ -36,7 +36,7 @@ class QuestionList extends React.Component {
 	 //    .then(user => {
 	 //        if (user.id) {
 	 //          this.props.loadUser(user)
-	 //          this.props.onRouteChange('home');
+	 //          thxis.props.onRouteChange('home');
 	 //        }
   //     	})
 	}
