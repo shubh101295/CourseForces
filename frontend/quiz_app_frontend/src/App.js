@@ -16,7 +16,7 @@ import CreateQuestions from "./components/CreateQuestions/CreateQuestions";
 import QuizInfoPage from "./components/QuizInfoPage/QuizInfoPage";
 import {particlesOptions} from './ParticlesProps.js'
 // import {courses} from './Courses'
-import {quizzes} from './quizzes'
+// import {quizzes} from './quizzes'
 import {students} from './students'
 import {questions} from './questions'
 
@@ -31,7 +31,7 @@ const initialState = {
     department: '',
   },
   course_page: {
-    role: '' ,  
+    role: 'Proff' ,  
     displayed_course: ''
   },
   quiz_page: {
@@ -41,6 +41,7 @@ const initialState = {
     input: ''
   },
   courses: [],
+  roles: [],
   quizzes: []
 }
 
@@ -79,11 +80,14 @@ class App extends Component{
       })
       .then(data => {
         let temp = []
+        let roles = []
         for (var i = 0; i < data.length; i++) {
           temp.push(data[i].course)
+          roles.push(data[i].role)
         }
         this.setState({
-          courses:temp 
+          courses:temp, 
+          roles: roles
         });
       })
       .catch(error => {
@@ -124,13 +128,45 @@ class App extends Component{
   }
 
 
-  onCourseSelect = (course) =>{
+  onCourseSelect = (idx) =>{
     this.setState({
-      route:'CoursePage',
       course_page:{
-        displayed_course:course
-      }
+        role: this.state.roles[idx],
+        displayed_course:this.state.courses[idx].course_code
+      },
+      route:'CoursePage'
     })
+
+    fetch(`http://127.0.0.1:8000/quiz/view/${this.state.courses[idx].id}/`, {
+      method: 'get',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': this.state.user.token
+      },
+    })
+      .then(response => {
+        if(response.status === 200){
+          alert("Quiz List Fetched!")
+          return response.json()
+        }
+        else{
+          throw new Error(response.status)
+        }
+      })
+      .then(data => {
+        let quizzes = []
+        for (var i = 0; i < data.quiz_list.length; i++) {
+          quizzes.push(data.quiz_list[i])
+        }
+        this.setState({
+          quizzes : quizzes
+        });
+      })
+      .catch(error => {
+        alert("Something's wrong, an error occured :(")
+        alert(error)
+      })
+
   }
   sendInvite = () =>{
     alert(this.state.invite_page.input);
@@ -153,11 +189,11 @@ class App extends Component{
             this.state.route==='signin'
             ? <SignIn onRouteChange={this.onRouteChange} loadUser={this.loadUser}/>
             : this.state.route==='home' 
-            ? <CardList onCourseSelect={this.onCourseSelect} role={this.state.course_page.role} courses = {this.state.courses} onRouteChange={this.onRouteChange} />
+            ? <CardList onCourseSelect={this.onCourseSelect} courses = {this.state.courses} onRouteChange={this.onRouteChange} />
             : this.state.route==='register'
             ? <Register onRouteChange={this.onRouteChange} />
             : this.state.route==='CoursePage'
-            ? <QuizList onRouteChange={this.onRouteChange} course_code={this.state.course_page.displayed_course} role={this.state.course_page.role} quizzes = {quizzes} />
+            ? <QuizList onRouteChange={this.onRouteChange} course_code={this.state.course_page.displayed_course} role={this.state.course_page.role} quizzes = {this.state.quizzes} />
             : this.state.route==='StudentList'
             ? <StudentList course_code={this.state.course_page.displayed_course} onRouteChange={this.onRouteChange} students={students}/>
             : this.state.route==='InviteForm'
@@ -167,9 +203,9 @@ class App extends Component{
             : this.state.route==='CreateQuestions'
             ? <CreateQuestions onRouteChange={this.onRouteChange} num={2} />
             : this.state.route==='QuizInfoPage'
-            ? <QuizInfoPage quiz={quizzes[this.state.quiz_page.displayed_quiz]} onRouteChange={this.onRouteChange} />
+            ? <QuizInfoPage quiz={this.state.quizzes[this.state.quiz_page.displayed_quiz]} onRouteChange={this.onRouteChange} />
             : this.state.route === 'QuestionList'
-            ? <QuestionList quiz={quizzes[this.state.quiz_page.displayed_quiz]} questions={questions} onRouteChange={this.onRouteChange} />
+            ? <QuestionList quiz={this.state.quizzes[this.state.quiz_page.displayed_quiz]} questions={questions} onRouteChange={this.onRouteChange} />
             : this.state.route==='CreateCourse'
             ? <CreateCourse onRouteChange={this.onRouteChange} data={this.state.user} loadUser = {this.loadUser} />
             : <p> Component not yet created! </p>

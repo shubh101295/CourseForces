@@ -7,9 +7,10 @@ const CardList = (props) => {
           return (
             <React.Fragment>
             <Card
-              key={i}
+              key={props.courses[i].id}
               course_code={props.courses[i].course_code}
               course_name={props.courses[i].course_name}
+              idx = {i}
               onCourseSelect = {props.onCourseSelect}
               />
               </React.Fragment>
@@ -19,7 +20,6 @@ const CardList = (props) => {
     <div>
       {allCards}
       <Add text="Course" onRouteChange={props.onRouteChange} route="CreateCourse" />
-      
     </div>
   );
 }
