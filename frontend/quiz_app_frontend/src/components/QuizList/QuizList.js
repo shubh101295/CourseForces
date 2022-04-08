@@ -11,7 +11,7 @@ const QuizList = (props) => {
               key={props.quizzes[i].pk}
               idx={i}
               loadQuizInfo = {props.loadQuizInfo}
-              quiz_title={props.quizzes[i].quiz_title}
+              quiz_title={props.quizzes[i].title}
               />
               </React.Fragment>
           );

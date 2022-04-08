@@ -226,12 +226,12 @@ class CreateQuestions extends React.Component {
 		              </select>
 					</h3>
 					<div className="w-100">
-						<h3 className="f4 bold serif">Postive Marks: <input onKeyPress={(event) => {if (!/[0-9]/.test(event.key)) {event.preventDefault();}}} id="num_of_questions" className="dib ml2 input-reset ba b--black-20 pa2 mb2 db w-50"
+						<h3 className="f4 bold serif">Postive Marks: <input onKeyPress={(event) => {if (!/[0-9.]/.test(event.key)) {event.preventDefault();}}} id="num_of_questions" className="dib ml2 input-reset ba b--black-20 pa2 mb2 db w-50"
 			  			onChange={this.onPosMark}
 						/> </h3>
 					</div>
 					<div className="w-100">
-						<h3 className="f4 bold serif">Negative Marks: <input onKeyPress={(event) => {if (!/[0-9]/.test(event.key)) {event.preventDefault();}}} id="num_of_questions" className="dib ml2 input-reset ba b--black-20 pa2 mb2 db w-50"
+						<h3 className="f4 bold serif">Negative Marks: <input onKeyPress={(event) => {if (!/[0-9.]/.test(event.key)) {event.preventDefault();}}} id="num_of_questions" className="dib ml2 input-reset ba b--black-20 pa2 mb2 db w-50"
 			  			onChange={this.onNegMark}
 						/> </h3>
 					
@@ -269,7 +269,7 @@ class CreateQuestions extends React.Component {
 								/> </h3>
 							</div>
 							<div className="w-100">
-								<h3 className="f4 bold serif">Correct Option: <input onKeyPress={(event) => {if (!/[0-9]/.test(event.key)) {event.preventDefault();}}} id="num_of_questions" className="dib ml2 input-reset ba b--black-20 pa2 mb2 db w-50"
+								<h3 className="f4 bold serif">Correct Option: <input onKeyPress={(event) => {if (!/[0-9.]/.test(event.key)) {event.preventDefault();}}} id="num_of_questions" className="dib ml2 input-reset ba b--black-20 pa2 mb2 db w-50"
 					  			onChange={this.onAnswerChangeMCQ}
 								/> </h3>
 							</div>
@@ -313,7 +313,7 @@ class CreateQuestions extends React.Component {
 								/> </h3>
 							</div>
 							<div className="w-100">
-								<h3 className="f4 bold serif">Correct Options: <input onKeyPress={(event) => {if (!/[0-9]/.test(event.key)) {event.preventDefault();}}} id="num_of_questions" className="dib ml2 input-reset ba b--black-20 pa2 mb2 db w-50"
+								<h3 className="f4 bold serif">Correct Options: <input onKeyPress={(event) => {if (!/[0-9.]/.test(event.key)) {event.preventDefault();}}} id="num_of_questions" className="dib ml2 input-reset ba b--black-20 pa2 mb2 db w-50"
 					  			onChange={this.onAnswerChangeMSQ}
 								/> </h3>
 							</div>	

@@ -23,7 +23,7 @@ class QuestionList extends React.Component {
 		this.props.onRouteChange('CoursePage')
 
 		// Send answers to backend
-		// fetch('http://localhost:3000/register', {
+		  	// fetch('http://localhost:3000/register', {
 	 //      method: 'post',
 	 //      headers: {'Content-Type': 'application/json'},
 	 //      body: JSON.stringify({
@@ -59,6 +59,7 @@ class QuestionList extends React.Component {
               question_type={this.props.questions[i].question_type}
               content={this.props.questions[i].content} 
               answer={this.props.questions[i].answer}
+              questions={this.props.questions[i]}
               positive_marks={this.props.questions[i].positive_marks}
               negative_marks={this.props.questions[i].negative_marks}
               onChangeAnswer = {this.onChangeAnswer}
