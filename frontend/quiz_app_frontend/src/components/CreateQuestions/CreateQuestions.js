@@ -10,7 +10,6 @@ const initialState = {
 			negative_marks: '',
 			partial_allowed: false,
 			done: 0,
-			questions : []
 }
 class CreateQuestions extends React.Component {
 	constructor(props){
@@ -43,11 +42,6 @@ class CreateQuestions extends React.Component {
 		  				options: ['', '', '', '']
 		  		})
 			    break;
-		  case "T/F":
-		  		this.setState({
-		  				options: [true,false]
-		  		})
-		  		break;
 		  default:
 		  		break;
 		}
@@ -77,13 +71,13 @@ class CreateQuestions extends React.Component {
 		this.setState({answer:Number(event.target.value)});
 	}
 
-	onAnswerChangeTF = (event) => {
-		if(event.target.value === "Choose Value"){
-			alert("Choose True or False!")
-			return
-		}
-		this.setState({answer: (event.target.value==="True"? true:false)});
-	}
+	// onAnswerChangeTF = (event) => {
+	// 	if(event.target.value === "Choose Value"){
+	// 		alert("Choose True or False!")
+	// 		return
+	// 	}
+	// 	this.setState({answer: (event.target.value==="True"? true:false)});
+	// }
 	onAnswerChangeSub = (event) => {
 		this.setState({answer: event.target.value});
 	}
@@ -102,48 +96,91 @@ class CreateQuestions extends React.Component {
 			alert("Empty input is invalid!")
 			return
 		}
-		if (this.state.question_type==='MCQ' || this.state.question_type === 'MSQ') {
+		if (this.state.question_type==='S' || this.state.question_type === 'M') {
 			if (this.state.options.length===0 || this.state.answer.length===0) {
 				alert("Empty Input is invalid!")
 				return
 			}
 		} 
 		else {
-			if (this.state.question_type==='T/F') {
-				if (this.state.answer==="Choose Value") {
-					alert("Choose True or False!")
-					return
-				}
-			}
-			else{
-				if (this.state.answer.length === 0) {
-					alert("Answer field empty :(")
-					return
-				}
+			if (this.state.answer.length === 0) {
+				alert("Answer field empty :(")
+				return
 			}
 		}
 		var done = this.state.done;
-		var questions = this.state.questions;
-		questions.push({
-			question_type: this.state.question_type,
-			content: {
-				heading: this.state.heading,
-				options: this.state.options
-			},
-			answer: this.state.answer,
-			positive_marks: this.state.positive_marks,
-			negative_marks: this.state.negative_marks,
-			partial_allowed: this.state.partial_allowed
-		});
+		// var questions = this.state.questions;
+		// questions.push({
+		// 	question_type: this.state.question_type,
+		// 	content: {
+		// 		heading: this.state.heading,
+		// 		options: this.state.options
+		// 	},
+		// 	answer: this.state.answer,
+		// 	positive_marks: this.state.positive_marks,
+		// 	negative_marks: this.state.negative_marks,
+		// 	partial_allowed: this.state.partial_allowed
+		// });
+		// TODO: While fetching question list, update number of questions
+		var ans = "";
+		var options = [];
+		var correct = [false,false,false,false]
+		for (var i = 0; i < this.state.answer.length; i++) {
+			correct[this.state.answer[i]-1] = true
+		}
+		if (this.state.question_type === 'F') {
+			ans = this.state.answer;
+		}
+		else{
+			for (var j = 0; j < 4; j++) {
+				options.push({
+					"option_value":this.state.options[j],
+					"is_correct" : correct[j]
+				})
+			}
+		}
+
+		fetch('http://127.0.0.1:8000/quiz/question/add/', {
+	      method: 'post',
+	      headers: {
+	        'Content-Type': 'application/json',
+	        'Authorization': this.props.token
+	      },
+	      body: JSON.stringify({
+	      	course_pk : this.props.course_pk,
+	      	quiz_pk : this.props.quiz_pk,
+	      	content : this.state.heading,
+	      	answer : ans,
+	      	positive_marks: this.state.positive_marks,
+	      	negative_marks: this.state.negative_marks,
+	      	question_type: this.state.question_type,
+	      	partial_allowed: this.state.partial_allowed,
+	      	options: options
+	      })
+	    })
+	    .then(response => {
+	    	return response.json()
+	    })
+	    .then(response => {
+	    	if(response.message === "Succesully created Question"){
+	    		// What to do of Pk?
+	    		alert("Question Created!")
+	    	}
+	    	else
+	    		throw new Error(response.message)
+	    })
+	    .catch(error => {
+	    	alert(error)
+	    	return
+	    })
 		this.setState(initialState);
 		this.setState({
 			done:done+1,
-			questions:questions 
 		});
 		if (end) {
 			alert('Woohooo! Quiz Created!')
-			// Send the quiz object to backend and then redirect
-			this.props.onRouteChange('CoursePage')
+
+			this.props.loadQuizzes()
 		}
 	}
 	
@@ -175,10 +212,9 @@ class CreateQuestions extends React.Component {
 					<h3 className="db"> Select Question Type:
 						<select onChange={this.onTypeChange} id="types" className="w-50 center db mt2 h2 f6 bg-transparent ba" name="">
 		                <option label="Choose Type" value="Choose Type"></option>
-		                <option label="MCQ" value="MCQ"></option>
-		                <option label="MSQ" value="MSQ"></option>
-		                <option label="True/False" value="T/F"></option>
-		                <option label="Subjective" value="Subjective"></option>
+		                <option label="MCQ" value="S"></option>
+		                <option label="MSQ" value="M"></option>
+		                <option label="Subjective" value="F"></option>
 		              </select>
 					</h3>
 					<div className="w-100">
@@ -193,7 +229,7 @@ class CreateQuestions extends React.Component {
 					
 					</div>
 					{
-						this.state.question_type==='MCQ'
+						this.state.question_type==='S'
 						? <div> 
 							<div className="w-100">
 								<h3 className="f4 bold serif">Question: <input  className="dib ml3 mt2 input-reset ba b--black-20 pa2 mb2 db w-50"
@@ -230,8 +266,8 @@ class CreateQuestions extends React.Component {
 								/> </h3>
 							</div>
 						</div>
-						: this.state.question_type==='MSQ'
-						?<div>
+						: this.state.question_type==='M'
+						? <div>
 							<h3 className="f4 mr4 serif"> Partial allowed:
 								<select onChange={this.partial} id="types" className="dib w-50 ml3	 db mt2 mb2 h2 f6 bg-transparent ba" name="">
 				                <option label="Choose Value" value="Choose Value"></option>
@@ -274,24 +310,7 @@ class CreateQuestions extends React.Component {
 								/> </h3>
 							</div>	
 						</div>
-						: this.state.question_type==='T/F'
-						? <div>
-							 <div className="w-100">
-								<h3 className="f4 bold serif">Question: <input  className="dib ml3 mt2 input-reset ba b--black-20 pa2 mb2 db w-50"
-					  			type="text"
-					  			onChange={this.onQuestionChange}
-								/> </h3>
-							</div>
-							<h3 className="f4 mr4 serif"> Answer:
-								<select onChange={this.onAnswerChangeTF} id="types" className="dib w-50 ml3	 db mt2 h2 f6 bg-transparent ba" name="">
-				                <option label="Choose Value" value="Choose Value"></option>
-				                <option label="True" value="True"></option>
-				                <option label="False" value="False"></option>
-				              </select>
-							</h3>
-						  </div>
-						: this.state.question_type==='Subjective'
-						?  <div>
+						: <div>
 								<div className="w-100">
 									<h3 className="f4 bold serif">Question: <input  className="dib ml3 mt2 input-reset ba b--black-20 pa2 mb2 db w-50"
 						  			type="text"
@@ -305,7 +324,6 @@ class CreateQuestions extends React.Component {
 									/> </h3>
 								</div>
 						   </div>
-						: <div />
 					}
 					{
 						this.state.type_selected && (this.state.done+1)===this.props.num

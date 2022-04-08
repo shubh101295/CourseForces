@@ -36,7 +36,9 @@ const initialState = {
     displayed_course: ''
   },
   quiz_page: {
-    displayed_quiz: 0
+    displayed_quiz: 0,
+    pk : -1,
+    num : 0,
   },
   invite_page: {
     input: ''
@@ -99,8 +101,6 @@ class App extends Component{
 
   }
 
-
-
   onInputChange = (event) => {
     this.setState({
       invite_page:{
@@ -109,6 +109,16 @@ class App extends Component{
     });
   }
 
+  setQuiz = (pk,num) => {
+    var len = this.state.quizzes.length
+    this.setState({
+      quiz_page:{
+        displayed_quiz: len,
+        pk: pk,
+        num: num,
+      } 
+    });
+  }
   onRouteChange = (route) => {
     if (route === 'signout') {
       fetch('http://127.0.0.1:8000/users/auth/logout/', {
@@ -171,6 +181,7 @@ class App extends Component{
       })
 
   }
+
   sendInvite = () =>{
     let r = prompt(`Enter the role (S/P) you wish to invite ${this.state.invite_page.input} as:\n S: Student \n P: Professor`)
     // send to backend, and set route depending on received status
@@ -223,6 +234,38 @@ class App extends Component{
     this.onRouteChange("StudentList")
   }
 
+  loadQuizzes = () => {
+    fetch(`http://127.0.0.1:8000/quiz/view/${this.state.courses[this.state.course_page.idx].id}/`, {
+      method: 'get',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': this.state.user.token
+      },
+    })
+      .then(response => {
+        if(response.status === 200){
+          alert("Quiz List Fetched!")
+          return response.json()
+        }
+        else{
+          throw new Error(response.status)
+        }
+      })
+      .then(data => {
+        let quizzes = []
+        for (var i = 0; i < data.quiz_list.length; i++) {
+          quizzes.push(data.quiz_list[i])
+        }
+        this.setState({
+          quizzes : quizzes
+        });
+      })
+      .catch(error => {
+        alert("Something's wrong, an error occured :(")
+        alert(error)
+      })
+  }
+
   onAnswerChange = (key) => {
 
   }
@@ -249,9 +292,9 @@ class App extends Component{
             : this.state.route==='InviteForm'
             ? <InviteForm sendInvite = {this.sendInvite} onInputChange={this.onInputChange} course_code={this.state.course_page.displayed_course} onRouteChange={this.onRouteChange} />
             : this.state.route==='CreateQuiz'
-            ? <CreateQuiz token = {this.state.user.token} course_pk = {this.state.courses[this.state.course_page.idx].id} onRouteChange={this.onRouteChange} />
+            ? <CreateQuiz setQuiz={this.setQuiz} token = {this.state.user.token} course_pk = {this.state.courses[this.state.course_page.idx].id} onRouteChange={this.onRouteChange} />
             : this.state.route==='CreateQuestions'
-            ? <CreateQuestions onRouteChange={this.onRouteChange} num={2} />
+            ? <CreateQuestions loadQuizzes={this.loadQuizzes} quiz_pk = {this.state.quiz_page.pk}  course_pk = {this.state.courses[this.state.course_page.idx].id} token = {this.state.user.token} onRouteChange={this.onRouteChange} num={this.state.quiz_page.num} />
             : this.state.route==='QuizInfoPage'
             ? <QuizInfoPage quiz={this.state.quizzes[this.state.quiz_page.displayed_quiz]} onRouteChange={this.onRouteChange} />
             : this.state.route === 'QuestionList'

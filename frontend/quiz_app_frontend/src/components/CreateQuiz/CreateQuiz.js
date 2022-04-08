@@ -53,8 +53,10 @@ class CreateQuiz extends React.Component {
       	return response.json()
       })
       .then(data => {
+      	// Save quiz pk info in App.js
       	if(data.message === "Successfully created Quiz!"){
       		alert(data.message)
+      		this.props.setQuiz(data.quiz_pk, this.state.num_of_questions)
 		  	this.props.onRouteChange("CreateQuestions")
       	}
       	else
