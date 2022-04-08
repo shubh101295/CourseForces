@@ -43,7 +43,8 @@ const initialState = {
   },
   courses: [],
   roles: [],
-  quizzes: []
+  quizzes: [],
+  students: []
 }
 
 class App extends Component{
@@ -189,7 +190,7 @@ class App extends Component{
       .then(response => {
         if(response.message === "User has been invited to the course"){
           alert(response.message + "!")
-          this.onRouteChange("StudentList");
+          this.loadStudents();
         }
         else{
           throw new Error(response.message)
@@ -199,6 +200,27 @@ class App extends Component{
         alert("Something's wrong, an error occured :(")
         alert(error)
       })
+  }
+
+  loadStudents = () => {
+    // Load from backend, update state, route to StudentList
+      fetch(`http://127.0.0.1:8000/courses/list/${this.state.courses[this.state.course_page.idx].id}/`, {
+      method: 'get',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': this.state.user.token
+      },
+    })
+      .then(response => {
+        if(response.status === 200){
+          alert("Quiz List Fetched!")
+          return response.json()
+        }
+        else{
+          throw new Error(response.status)
+        }
+      })
+    this.onRouteChange("StudentList")
   }
 
   onAnswerChange = (key) => {
@@ -221,13 +243,13 @@ class App extends Component{
             : this.state.route==='register'
             ? <Register onRouteChange={this.onRouteChange} />
             : this.state.route==='CoursePage'
-            ? <QuizList onRouteChange={this.onRouteChange} course_code={this.state.course_page.displayed_course} role={this.state.course_page.role} quizzes = {this.state.quizzes} />
+            ? <QuizList loadStudents = {this.loadStudents} onRouteChange={this.onRouteChange} course_code={this.state.course_page.displayed_course} role={this.state.course_page.role} quizzes = {this.state.quizzes} />
             : this.state.route==='StudentList'
             ? <StudentList course_code={this.state.course_page.displayed_course} onRouteChange={this.onRouteChange} students={students}/>
             : this.state.route==='InviteForm'
             ? <InviteForm sendInvite = {this.sendInvite} onInputChange={this.onInputChange} course_code={this.state.course_page.displayed_course} onRouteChange={this.onRouteChange} />
             : this.state.route==='CreateQuiz'
-            ? <CreateQuiz onRouteChange={this.onRouteChange} />
+            ? <CreateQuiz course_pk = {this.state.courses[this.state.course_page.idx].id} onRouteChange={this.onRouteChange} />
             : this.state.route==='CreateQuestions'
             ? <CreateQuestions onRouteChange={this.onRouteChange} num={2} />
             : this.state.route==='QuizInfoPage'

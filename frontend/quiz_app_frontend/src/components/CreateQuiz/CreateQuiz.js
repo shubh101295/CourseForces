@@ -31,6 +31,40 @@ class CreateQuiz extends React.Component {
   	this.setState({num_of_questions: Number(event.target.value)})
   }
 
+  onSubmit = () => {
+  	// Send to backend, route to CreateQuestions
+  	alert("Here!")
+  	alert(this.props.course_pk)
+	fetch('http://127.0.0.1:8000/quiz/add/', {
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': this.state.user.token
+      },
+      body: JSON.stringify({
+      	title : this.state.title,
+      	content: this.state.content,
+      	course_pk : this.props.course_pk,
+      	deadline: this.state.deadline,
+      	start_at: this.state.start_at
+      })
+    })
+      .then(response => {
+      	alert(response)
+      	return response.json()
+      })
+      .then(data => {
+      	if(data.message === "Successfully created Quiz!"){
+      		alert(data.message)
+		  	this.props.onRouteChange("CreateQuestions")
+      	}
+      	else
+      		throw new Error(data.message)
+      })
+      .catch(error => {
+      	alert(error)
+      })
+  }
   render() {
   	return (
   		<div>
@@ -65,7 +99,7 @@ class CreateQuiz extends React.Component {
 	  			onChange={this.onTotalChange}
 				/> </h3>
 			</div>	
-			<button className="f6 link pointer br1  mr4 ph3 pv2 mb2 shadow-4 dib white bg-gray" onClick = {() => this.props.onRouteChange('CreateQuestions')}> Add Questions </button>
+			<button className="f6 link pointer br1  mr4 ph3 pv2 mb2 shadow-4 dib white bg-gray" onClick = {() => this.onSubmit()}> Add Questions </button>
 		</div>
   		</div>
   	);
