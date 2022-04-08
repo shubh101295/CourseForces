@@ -38,7 +38,7 @@ def add_quiz(request):
 				new_quiz_in_course_relation.save()
 				return	Response({
 					"quiz_pk":quiz_response.pk,
-					"message":"Succesully created Quiz"
+					"message":"Successfully created Quiz!"
 					} ,status=status.HTTP_200_OK)
 			return Response({"message":"errors",
 							"error":serializer.errors }
