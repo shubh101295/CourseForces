@@ -37,11 +37,14 @@ def add_quiz(request):
 				new_quiz_in_course_relation = quiz_in_course(course=course,quiz=quiz_response)
 				new_quiz_in_course_relation.save()
 				return	Response({
-					"quiz_pk":quiz_response.pk 
+					"quiz_pk":quiz_response.pk,
+					"message":"Succesully created Quiz"
 					} ,status=status.HTTP_200_OK)
-			return Response(serializer.errors , status=status.HTTP_400_BAD_REQUEST) 
-		return Response("You are not Professor in the course",status=status.HTTP_401_UNAUTHORIZED)
-	return Response(util_data["error_message"], status=util_data["status"])
+			return Response({"message":"errors",
+							"error":serializer.errors }
+							, status=status.HTTP_400_BAD_REQUEST) 
+		return Response({"message":"You are not Professor in the course"},status=status.HTTP_401_UNAUTHORIZED)
+	return Response({"message":util_data["error_message"]}, status=util_data["status"])
 
 @api_view(["GET"])
 def quiz_in_a_course_list(request,course_pk):
@@ -61,8 +64,9 @@ def quiz_in_a_course_list(request,course_pk):
 				"start_at":i.quiz.start_at,	
 			}
 			course_data["quiz_list"].append(_current_quiz_data)
+		course_data["message"]="ok"
 		return Response(course_data,status=status.HTTP_200_OK)
-	return Response(util_data["error_message"], status=util_data["status"])
+	return Response({"message":util_data["error_message"]}, status=util_data["status"])
 
 
 @api_view(["POST"])
@@ -94,19 +98,22 @@ def add_question(request):
 							for _temp_option_data in question_data["options"]:
 								print(_temp_option_data)
 								if "option_value" not in _temp_option_data.keys() or "is_correct" not in _temp_option_data.keys():
-									return Response("Option at index "+str(index)+" has wrong format",status=status.HTTP_400_BAD_REQUEST)
+									return Response({"message":"Option at index "+str(index)+" has wrong format"},status=status.HTTP_400_BAD_REQUEST)
 								_current_option_serialiser = OptionSerializer(data={"option_value":_temp_option_data["option_value"]})
 								if _current_option_serialiser.is_valid():
 									option_serialisers.append(_current_option_serialiser)
 								else:
-									return Response(_current_option_serialiser.errors , status=status.HTTP_400_BAD_REQUEST)
+									return Response({
+											"message":"error",
+											"errors":_current_option_serialiser.errors
+										} , status=status.HTTP_400_BAD_REQUEST)
 								if _temp_option_data["is_correct"]==True:
 									correct_answers_index.append(index)
 								index+=1
 							if len(option_serialisers)<1 or len(option_serialisers)>5 or len(correct_answers_index)==0:
-								return Response("A question must have total number of options in range 1 to 5 and have atleast one answer correct", status=status.HTTP_400_BAD_REQUEST)
+								return Response({"message":"A question must have total number of options in range 1 to 5 and have atleast one answer correct"}, status=status.HTTP_400_BAD_REQUEST)
 							if 	question_data["question_type"] == "S" and len(correct_answers_index)>1:
-								return Response("A single correct type can have exactly one correct answer",status=status.HTTP_400_BAD_REQUEST)
+								return Response({"message":"A single correct type can have exactly one correct answer"},status=status.HTTP_400_BAD_REQUEST)
 							index = 0
 							_answer_pks= []
 							for _temp_serializer in option_serialisers:
@@ -130,13 +137,17 @@ def add_question(request):
 						new_question_in_quiz_relation = question_in_quiz(question=question_response,quiz=quiz_in_course_relations[0].quiz)
 						new_question_in_quiz_relation.save()
 						return Response({
-							"question_pk":question_response.pk
+							"question_pk":question_response.pk,
+							"message":"Succesully created Question"
 							},status=status.HTTP_200_OK)
-					return Response(question_serializer.errors , status=status.HTTP_400_BAD_REQUEST)
-				return Response("No such quiz found in the course", status=status.HTTP_400_BAD_REQUEST)
-			return Response("quiz_pk should not be empty",status=status.HTTP_400_BAD_REQUEST)
-		return Response("You are not Professor in the course",status=status.HTTP_401_UNAUTHORIZED)
-	return Response(util_data["error_message"], status=util_data["status"])
+					return Response({
+							"message":"error",
+							"errors":question_serializer.errors
+						} , status=status.HTTP_400_BAD_REQUEST)
+				return Response({"message":"No such quiz found in the course"}, status=status.HTTP_400_BAD_REQUEST)
+			return Response({"message":"quiz_pk should not be empty"},status=status.HTTP_400_BAD_REQUEST)
+		return Response({"message":"You are not Professor in the course"},status=status.HTTP_401_UNAUTHORIZED)
+	return Response({"message":util_data["error_message"]}, status=util_data["status"])
 
 @api_view(["DELETE"])
 def delete_question(request):
@@ -158,13 +169,13 @@ def delete_question(request):
 								option_relation = Option.objects.filter(Q(pk=_option.option.pk))
 								option_relation.delete()
 							question_relations.delete()
-							return Response("Succesfully deleted the question",status=status.HTTP_200_OK)
-						return Response("No such question found in the quiz", status=status.HTTP_400_BAD_REQUEST)
-					return Response("question_pk should not be empty",status=status.HTTP_400_BAD_REQUEST)
-				return Response("No such quiz found in the course", status=status.HTTP_400_BAD_REQUEST)
-			return Response("quiz_pk should not be empty",status=status.HTTP_400_BAD_REQUEST)
-		return Response("You are not Professor in the course",status=status.HTTP_401_UNAUTHORIZED)
-	return Response(util_data["error_message"], status=util_data["status"])
+							return Response({"message":"Succesfully deleted the question"},status=status.HTTP_200_OK)
+						return Response({"message":"No such question found in the quiz"}, status=status.HTTP_400_BAD_REQUEST)
+					return Response({"message":"question_pk should not be empty"},status=status.HTTP_400_BAD_REQUEST)
+				return Response({"message":"No such quiz found in the course"}, status=status.HTTP_400_BAD_REQUEST)
+			return Response({"message":"quiz_pk should not be empty"},status=status.HTTP_400_BAD_REQUEST)
+		return Response({"message":"You are not Professor in the course"},status=status.HTTP_401_UNAUTHORIZED)
+	return Response({"message":util_data["error_message"]}, status=util_data["status"])
 
 @api_view(["GET"])
 def view_quiz_questions(request,course_pk, quiz_pk):
@@ -206,7 +217,7 @@ def view_quiz_questions(request,course_pk, quiz_pk):
 		return Response("No such quiz found in the course", status=status.HTTP_400_BAD_REQUEST)
 	return Response(util_data["error_message"], status=util_data["status"])
 
-@api_view(["DELETE"])
+@api_view(["POST"])
 def make_a_quiz_submission(request):
 	user = getUser(request)
 	util_data,course = user_in_course_details(user,request.data.get("course_pk",""))
