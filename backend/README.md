@@ -173,7 +173,8 @@ Output format
         "username": "shubh101295",
         "name": "shubh1012"
     }
-]```
+]
+```
 
 ### Quiz
 
@@ -323,7 +324,7 @@ On success
 
 ```
 Route - /quiz/view/<int:course_pk>/<int:quiz_pk>/
-Task - It lists all the question in the course
+Task - It lists all the question in the quiz
 
 Headers should contain "Authorization" field which stores the token
 METHOD - POST
@@ -378,4 +379,8 @@ Output format
         }
     ]
 }
+```
+
+```
+
 ```
