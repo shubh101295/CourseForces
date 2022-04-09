@@ -35,13 +35,13 @@ const QuizList = (props) => {
           }
           </div>
   }
-{/*  {
+  {
     props.role==='P'
     ? <div className = "w-100 mt4 pa2 flex">
     <button class="f6 link pointer br1 center fr mr4 ph4 pv3 mb2 shadow-4 dib white bg-red" onClick = {() => props.deleteCourse()}  >Delete Course</button>
     </div>
     : <div />
-  }*/}
+  }
   </div>
   );
 }

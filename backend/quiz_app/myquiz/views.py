@@ -222,6 +222,8 @@ def view_quiz_questions(request,course_pk, quiz_pk):
 
 @api_view(["POST"])
 def make_a_quiz_submission(request):
+	print(request.data)
+	print("0------")
 	user = getUser(request)
 	util_data,course = user_in_course_details(user,request.data.get("course_pk",""))
 	if util_data["allowed"]:

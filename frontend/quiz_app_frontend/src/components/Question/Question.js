@@ -17,7 +17,7 @@ class Question extends React.Component {
   		checked_radio_option: c===Number(event.target.id) ? '':Number(event.target.id)
   	});
 
-  	this.props.onChangeAnswer(this.props.num-1, [event.target.value]);
+  	this.props.onChangeAnswer(this.props.num-1, [Number(event.target.value)]);
   }
 
   onClickCheck = (event) => {
