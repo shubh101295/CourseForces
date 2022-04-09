@@ -302,3 +302,29 @@ def make_a_quiz_submission(request):
 		return Response({"message":"You are not Student in the course"},status=status.HTTP_401_UNAUTHORIZED)
 	return Response({"message":util_data["error_message"]}, status=util_data["status"])
 
+@api_view(["GET"])
+def view_quiz_marks_list(request,course_pk, quiz_pk):
+	user = getUser(request)
+	# print(user)
+	util_data,course = user_in_course_details(user,course_pk)
+	if util_data["allowed"]:
+		if util_data["relation"] == 'P': 
+			quiz_in_course_relations = quiz_in_course.objects.filter(Q(course=course) & Q(quiz=quiz_pk)).distinct()
+			# print(quiz_in_course_relations)
+			if len(quiz_in_course_relations)==1:
+				attempts = quiz_quizattempt.objects.filter(Q(quiz=quiz_pk))
+				return_data = []
+				for i in attempts:
+					current_user_attempt = user_quizattempt.objects.filter(Q(quiz_attempt=i.quiz_attempt))
+					print(current_user_attempt)
+					print(i)
+					return_data.append({
+							"name":current_user_attempt[0].user.name,
+							"username":current_user_attempt[0].user.username,
+							"user_pk":current_user_attempt[0].user.pk,
+							"total_marks":i.quiz_attempt.total_marks
+						})
+				return Response(return_data,status=status.HTTP_200_OK)
+			return Response({"message":"No such quiz found in the course"}, status=status.HTTP_400_BAD_REQUEST)
+		return Response({"message":"You are not Professor in the course"},status=status.HTTP_401_UNAUTHORIZED)
+	return Response({"message":util_data["error_message"]}, status=util_data["status"])
