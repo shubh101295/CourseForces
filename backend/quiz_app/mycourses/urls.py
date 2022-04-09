@@ -11,5 +11,6 @@ urlpatterns = [
 	path('my/list/',view_my_courses, name="view_my_courses"),
 	path('join/code=<str:code>/',accept_course_join, name="accept_course_join"),
 	path('list/<int:course_pk>/',view_course_list,name="view_course_list")
+	# path('delete',)
 ]
 

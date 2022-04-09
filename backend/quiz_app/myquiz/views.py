@@ -7,7 +7,7 @@ from rest_framework import status
 
 from .models import *
 from .utils import user_in_course_details
-from .serializers import QuizSerializer,QuestionSerializer,OptionSerializer
+from .serializers import QuizSerializer,QuestionSerializer,OptionSerializer,QuizAttemptSerializer
 from myusers.utils import getUser
 from django.db.models import Q 
 
@@ -233,7 +233,7 @@ def make_a_quiz_submission(request):
 					question_relation = question_in_quiz.objects.filter(Q(quiz=quiz_pk))
 					question_data = {}
 					for i in question_relation:
-						_quiz = i.question
+						_ques = i.question
 						question_data[_ques.pk] =  {
 							"question_type":_ques.question_type
 						}
@@ -243,18 +243,21 @@ def make_a_quiz_submission(request):
 							for _option in _ques_options:
 								question_data[_ques.pk]["options"].append(_option.option.pk)
 
-					question_attemps = []
+					print(question_data)
+					user_question_attempts = []
 					for _ques_response in request.data.get("ques_response",[]):
 						if _ques_response.get("question_pk","") in question_data.keys() and "answer" in _ques_response:
 							_ques_data = question_data[_ques_response.get("question_pk","")]
-							if _ques_data.question_type=="M" or _ques_data.question_type=="S":
+							print(_ques_data)
+							if _ques_data["question_type"]=="M" or _ques_data["question_type"]=="S":
 								if isinstance(_ques_response["answer"],list):
 									for _selected_option_id in _ques_response["answer"]:
-										if _selected_option_id not in question_data["options"]:
+										print(_selected_option_id,_ques_data["options"])
+										if _selected_option_id not in _ques_data["options"]:
 											return Response("Invalid option id sent",status=status.HTTP_400_BAD_REQUEST)
-									if _ques_data.question_type=="S" and len(_ques_response["answer"])>1:
+									if _ques_data["question_type"]=="S" and len(_ques_response["answer"])>1:
 										return Response("Only one option can be selected in Single correct question",status=status.HTTP_400_BAD_REQUEST)
-									question_attempt.append(
+									user_question_attempts.append(
 											{
 												"student_answer":";".join([str(x) for x in _ques_response["answer"]]),
 												"question":_ques_response.get("question_pk","")
@@ -262,21 +265,33 @@ def make_a_quiz_submission(request):
 								else:
 									return Response("Answer to a single/multi correct question should be a list of ids of options selected", status=status.HTTP_400_BAD_REQUEST)
 							else:
-								question_attempt.append(
+								user_question_attempts.append(
 									{
 										"student_answer":_ques_response["answer"],
 										"question":_ques_response.get("question_pk","")
 									}) 
 						else:
 							return Response("Found a question either not having question_pk or does not belong to the course or answer not given",status=status.HTTP_400_BAD_REQUEST)
-					quiz_attempt= QuizAttempt(submitted=request.data.get("submitted", False))
-					quiz_attempt_response = quiz_attempt.save()
+					# quiz_attempt= QuizAttempt(submitted=request.data.get("submitted", False))
+					if len(question_relation) != len(user_question_attempts):
+						return Response("Number of question in quiz and the submission are different",status=status.HTTP_400_BAD_REQUEST)
+					
+					attempt_serialiser = QuizAttemptSerializer(data={
+							"submitted":True
+						})
+					if not attempt_serialiser.is_valid():
+						return Response({"error":attempt_serialiser.errors()},status=status.HTTP_400_BAD_REQUEST)
+					quiz_attempt_response = attempt_serialiser.save()
+					print(quiz_attempt_response)
 					_user_quizattempt = user_quizattempt(user=user,quiz_attempt=quiz_attempt_response)
 					_user_quizattempt.save()
-					_quiz_quizattempt = quiz_quizattempt(quiz=quiz_pk,quiz_attempt=quiz_attempt_response)
+					_current_quiz = Quiz.objects.filter(Q(pk=quiz_pk))
+					_quiz_quizattempt = quiz_quizattempt(quiz=_current_quiz[0],quiz_attempt=quiz_attempt_response)
 					_quiz_quizattempt.save()
-					for q in question_attemps:
-						qa = question_attempt(question=q["question"],quiz_attempt=quiz_attempt_response,student_answer=q["student_answer"])
+					for q in user_question_attempts:
+						# print(q["question"])
+						_current_question = Question.objects.filter(Q(pk=q["question"]))
+						qa = question_attempt(question=_current_question[0],quiz_attempt=quiz_attempt_response,student_answer=q["student_answer"])
 						qa.save()
 					return Response({
 							"message":"Succesully saved/submitted the quiz response",

@@ -141,3 +141,24 @@ def view_course_list(request,course_pk):
 			return Response("User not in course", status=status.HTTP_401_UNAUTHORIZED)
 		return Response("No such course exists" ,status= status.HTTP_400_BAD_REQUEST)
 	return Response("No user is logged in ", status=status.HTTP_401_UNAUTHORIZED)
+
+# @api_view(["DELETE"])
+# def delete_course(request):
+# 	user = getUser(request)
+# 	if user is not None:
+# 		if user.verified == True:
+# 			course_pk = request.data.get("course_pk", "")
+# 			course = Course.objects.filter(Q(pk= course_pk))
+# 			if len(course) ==1:
+# 				course = course[0]
+# 				relation = user_in_course.objects.filter(Q(user=user) & Q(course=course))
+# 				if len(relation)==1 :
+# 					relation = relation[0]
+# 					if relation.role=='P' :
+						
+# 					return Response({ "message": "User is not Professor , does not have join request sending access"} , status=status.HTTP_401_UNAUTHORIZED)
+# 				return Response({ "message": "User is not in the group , does not have join request sending access" }, status=status.HTTP_401_UNAUTHORIZED)
+# 			return Response({ "message": "No such course exists" },status= status.HTTP_400_BAD_REQUEST)
+# 		return Response({ "message": "First Activate your account"},status=status.HTTP_400_BAD_REQUEST)
+# 	return Response({ "message": "No user is logged in "}, status=status.HTTP_401_UNAUTHORIZED)
+# 	
