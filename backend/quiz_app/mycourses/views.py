@@ -125,7 +125,7 @@ def view_course_list(request,course_pk):
 		if len(course)==1:
 			current_user_in_course = user_in_course.objects.filter(Q(course=course_pk) & Q(user=user)).values()
 			if len(current_user_in_course)==1:
-				users_in_course = user_in_course.objects.filter(Q(course=course_pk))
+				users_in_course = user_in_course.objects.filter(Q(course=course_pk) & Q(request_accepted=True)).distinct()
 				_data_to_send = []
 				for i in users_in_course:
 					print(i)
