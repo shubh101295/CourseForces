@@ -13,32 +13,12 @@ class QuestionList extends React.Component {
 
 
 	onSubmit = () =>{
-		// const today = new Date();
-		// const time = today.getHours() + ':' + today.getMinutes() + ':' + today.getSeconds();
-		// this.setState({
-		// 	submitted: true,
-		// 	submitted_time: time
-		// })
-
+		
 		this.props.onRouteChange('CoursePage')
 
 		// Send answers to backend
-		  	// fetch('http://localhost:3000/register', {
-	 //      method: 'post',
-	 //      headers: {'Content-Type': 'application/json'},
-	 //      body: JSON.stringify({
-	 //        quiz_: this.state.email,
-	 //        password: this.state.password,
-	 //        name: this.state.name
-	 //      })
-	 //    })
-	 //    .then(response => response.json())
-	 //    .then(user => {
-	 //        if (user.id) {
-	 //          this.props.loadUser(user)
-	 //          thxis.props.onRouteChange('home');
-	 //        }
-  //     	})
+		
+
 	}
 
 	onChangeAnswer = (idx, ans) => {
