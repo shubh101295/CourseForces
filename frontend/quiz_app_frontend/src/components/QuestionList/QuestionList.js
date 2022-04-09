@@ -20,7 +20,7 @@ class QuestionList extends React.Component {
 
 
 	onSubmit = () =>{
-		alert(this.state.answers[0].answer)
+		alert(this.state.answers)
 		fetch('http://127.0.0.1:8000/quiz/make/submission/', {
 	      method: 'post',
 	      headers: {
@@ -30,7 +30,7 @@ class QuestionList extends React.Component {
 	      body: JSON.stringify({
 	      	course_pk : this.props.course_pk,
 	      	quiz_pk : this.props.quiz_pk,
-	      	answer: this.state.answers
+	      	ques_response: this.state.answers
 	      })
 	    })
 	    .then(response => {return response.json()})

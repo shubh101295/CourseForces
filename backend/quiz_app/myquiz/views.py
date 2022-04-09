@@ -256,14 +256,14 @@ def make_a_quiz_submission(request):
 										if _selected_option_id not in _ques_data["options"]:
 											return Response("Invalid option id sent",status=status.HTTP_400_BAD_REQUEST)
 									if _ques_data["question_type"]=="S" and len(_ques_response["answer"])>1:
-										return Response("Only one option can be selected in Single correct question",status=status.HTTP_400_BAD_REQUEST)
+										return Response({"message":"Only one option can be selected in Single correct question"},status=status.HTTP_400_BAD_REQUEST)
 									user_question_attempts.append(
 											{
 												"student_answer":";".join([str(x) for x in _ques_response["answer"]]),
 												"question":_ques_response.get("question_pk","")
 											}) 
 								else:
-									return Response("Answer to a single/multi correct question should be a list of ids of options selected", status=status.HTTP_400_BAD_REQUEST)
+									return Response({"message":"Answer to a single/multi correct question should be a list of ids of options selected"}, status=status.HTTP_400_BAD_REQUEST)
 							else:
 								user_question_attempts.append(
 									{
@@ -271,10 +271,10 @@ def make_a_quiz_submission(request):
 										"question":_ques_response.get("question_pk","")
 									}) 
 						else:
-							return Response("Found a question either not having question_pk or does not belong to the course or answer not given",status=status.HTTP_400_BAD_REQUEST)
+							return Response({"message":"Found a question either not having question_pk or does not belong to the course or answer not given"},status=status.HTTP_400_BAD_REQUEST)
 					# quiz_attempt= QuizAttempt(submitted=request.data.get("submitted", False))
 					if len(question_relation) != len(user_question_attempts):
-						return Response("Number of question in quiz and the submission are different",status=status.HTTP_400_BAD_REQUEST)
+						return Response({"message":"Number of question in quiz and the submission are different"},status=status.HTTP_400_BAD_REQUEST)
 					
 					attempt_serialiser = QuizAttemptSerializer(data={
 							"submitted":True
