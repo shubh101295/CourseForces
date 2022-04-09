@@ -427,3 +427,27 @@ On success Output
 }
 
 ```
+
+```
+Route - /quiz/show/marks/list/<int:course_pk>/<int:quiz_pk>/
+Task - It shows marks list of student for the quiz
+
+Headers should contain "Authorization" field which stores the token
+METHOD - POST
+
+Output = 
+[
+    {
+        "name": "shubh1012",
+        "username": "shubh101295",
+        "user_pk": 18,
+        "total_marks": 1.5
+    },
+    {
+        "name": "shubh10122",
+        "username": "shubh12301295",
+        "user_pk": 19,
+        "total_marks": 2.0
+    }
+]
+```
