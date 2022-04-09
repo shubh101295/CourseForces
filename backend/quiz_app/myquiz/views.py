@@ -294,7 +294,7 @@ def make_a_quiz_submission(request):
 						qa = question_attempt(question=_current_question[0],quiz_attempt=quiz_attempt_response,student_answer=q["student_answer"])
 						qa.save()
 					return Response({
-							"message":"Succesully saved/submitted the quiz response",
+							"message":"Succesully submitted the quiz response",
 							"quiz_attempt_pk":quiz_attempt_response.pk
 						},status=status.HTTP_200_OK)
 				return Response("No such quiz found in the course", status=status.HTTP_400_BAD_REQUEST)

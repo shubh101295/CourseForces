@@ -379,5 +379,51 @@ Output format
 ```
 
 ```
+Route - /quiz/make/submission/
+Task - It makes a submission of the student for the quiz
+
+Headers should contain "Authorization" field which stores the token
+METHOD - POST
+
+Input format
+{
+    "course_pk":<int>,
+    "quiz_pk":<int>,
+    "ques_response":[
+        {
+            "question_pk":<int>,
+            "answer":<string for Fill ups, list of option_pks for Single or Multi correct>
+        },
+        ...
+    ]
+}
+
+eg.
+{
+    "course_pk":5,
+    "quiz_pk":12,
+    "ques_response":[
+        {
+            "question_pk":12,
+            "answer":"Yes"
+        },
+        {
+            "question_pk":13,
+            "answer":[36]
+        },
+        {
+            "question_pk":14,
+            "answer":"no"
+        }
+    ]
+}
+
+
+On success Output
+
+{
+    "message": "Succesully submitted the quiz response",
+    "quiz_attempt_pk": 11
+}
 
 ```
