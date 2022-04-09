@@ -297,8 +297,8 @@ def make_a_quiz_submission(request):
 							"message":"Succesully submitted the quiz response",
 							"quiz_attempt_pk":quiz_attempt_response.pk
 						},status=status.HTTP_200_OK)
-				return Response("No such quiz found in the course", status=status.HTTP_400_BAD_REQUEST)
-			return Response("quiz_pk should not be empty",status=status.HTTP_400_BAD_REQUEST)
-		return Response("You are not Student in the course",status=status.HTTP_401_UNAUTHORIZED)
-	return Response(util_data["error_message"], status=util_data["status"])
+				return Response({"message":"No such quiz found in the course"}, status=status.HTTP_400_BAD_REQUEST)
+			return Response({"message":"quiz_pk should not be empty"},status=status.HTTP_400_BAD_REQUEST)
+		return Response({"message":"You are not Student in the course"},status=status.HTTP_401_UNAUTHORIZED)
+	return Response({"message":util_data["error_message"]}, status=util_data["status"])
 

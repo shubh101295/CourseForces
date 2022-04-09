@@ -4,29 +4,77 @@ import Question from '../Question/Question'
 class QuestionList extends React.Component {
 	constructor(props) {
 		super(props);
+		var arr = []
+		for (var i = 0; i < this.props.questions.length; i++) {
+			arr.push({
+				question_pk : '1',
+				answer: ''
+			})
+		}
 		this.state = {
 			submitted: false,
 			submitted_time: '',
-			answers : new Array(this.props.questions.length)
+			answers : arr
 		}
 	}
 
 
 	onSubmit = () =>{
-		
+		alert(this.state.answers[0].answer)
+		fetch('http://127.0.0.1:8000/quiz/make/submission/', {
+	      method: 'post',
+	      headers: {
+	        'Content-Type': 'application/json',
+	        'Authorization': this.props.token
+	      },
+	      body: JSON.stringify({
+	      	course_pk : this.props.course_pk,
+	      	quiz_pk : this.props.quiz_pk,
+	      	answer: this.state.answers
+	      })
+	    })
+	    .then(response => {return response.json()})
+	    .then(response => {
+	    	if(response.message==="Succesully submitted the quiz response")
+		    	alert("Successfully Submitted!")
+		    else
+		    	throw new Error(response.message)
+	    })
+	    .catch(error=> {
+	    	alert(error)
+	    })
 		this.props.onRouteChange('CoursePage')
-
-		// Send answers to backend
-		
-
 	}
 
 	onChangeAnswer = (idx, ans) => {
-		var temp = this.state.answers;
-		temp[idx] = ans;
+		let temp = [];
+		var x;
+		if (this.props.questions[idx].question_type==='F') {
+			x=ans
+		}
+		else{
+			x = Array.from(ans)
+		}
+		// alert(x)
+		for (var i = 0; i < this.state.answers.length; i++) {
+			if(i===idx){
+				// alert(i)
+				temp.push({
+					question_pk: this.props.questions[idx].question_pk,
+					answer:x
+				})
+				// alert(temp)
+			}
+			else{
+				// alert(this.state.answers[i])
+				temp.push(this.state.answers[i])
+				// alert(temp)
+			}
+		}
 		this.setState({
 			answers: temp 
 		});
+
 	}
 	render(){
 

@@ -13,17 +13,16 @@ class Question extends React.Component {
 
   onClickRadio = (event) => {
   	var c = this.state.checked_radio_option
-  	var ans = c===Number(event.target.id) ? '':Number(event.target.id)
   	this.setState({
   		checked_radio_option: c===Number(event.target.id) ? '':Number(event.target.id)
   	});
 
-  	this.props.onChangeAnswer(this.props.num-1, ans);
+  	this.props.onChangeAnswer(this.props.num-1, [event.target.value]);
   }
 
   onClickCheck = (event) => {
   	var s = this.state.checkbox_options;
-  	var x = Number(event.target.id);
+  	var x = Number(event.target.value);
   	if(s.has(x)){
   		s.delete(x)
   	}
@@ -38,14 +37,14 @@ class Question extends React.Component {
   	this.props.onChangeAnswer(this.props.num-1, ans );
   }
 
-  onClickTF = (event) => {
-  	var c = this.state.true_false
-  	var ans = c===event.target.value ? '': event.target.value
-  	this.setState({
-  		true_false: c===event.target.value ? '': event.target.value
-  	});
-  	this.props.onChangeAnswer(this.props.num-1, ans );
-  }
+  // onClickTF = (event) => {
+  // 	var c = this.state.true_false
+  // 	var ans = c===event.target.value ? '': event.target.value
+  // 	this.setState({
+  // 		true_false: c===event.target.value ? '': event.target.value
+  // 	});
+  // 	this.props.onChangeAnswer(this.props.num-1, ans );
+  // }
 
   	onChangeSub = (event) => {
 
@@ -69,19 +68,19 @@ class Question extends React.Component {
 		      	? <div>
 					<form class="center pa2 flex flex-column">
 					    <div class="flex items-center w-100 mb2">
-					      <input class="mr2 ml4" onChange={this.onClickRadio} type="checkbox" checked={this.state.checked_radio_option===1} id={1} value={this.props.questions.options[0].option_value} />
+					      <input class="mr2 ml4" onChange={this.onClickRadio} type="checkbox" checked={this.state.checked_radio_option===1} id={1} value={this.props.questions.options[0].option_pk} />
 					      <label class="serif pl3 f4 i lh-copy">{this.props.questions.options[0].option_value}</label>
 					    </div>
 					    <div class="flex items-center w-100 mb2">
-					      <input onChange={this.onClickRadio} class="mr2 ml4" type="checkbox" checked={this.state.checked_radio_option===2} id={2} value={this.props.questions.options[1].option_value} />
+					      <input onChange={this.onClickRadio} class="mr2 ml4" type="checkbox" checked={this.state.checked_radio_option===2} id={2} value={this.props.questions.options[1].option_pk} />
 					      <label class="f4 pl3 i serif lh-copy">{this.props.questions.options[1].option_value}</label>
 					    </div>
 					    <div class="flex items-center w-100 mb2">
-					      <input onChange={this.onClickRadio} class="mr2 ml4" type="checkbox" checked={this.state.checked_radio_option===3} id={3} value={this.props.questions.options[2].option_value} />
+					      <input onChange={this.onClickRadio} class="mr2 ml4" type="checkbox" checked={this.state.checked_radio_option===3} id={3} value={this.props.questions.options[2].option_pk} />
 					      <label  class="f4 i pl3 serif lh-copy">{this.props.questions.options[2].option_value}</label>
 					    </div>
 					    <div class="flex items-center w-100 mb2">
-					      <input onChange={this.onClickRadio} class="mr2 ml4" type="checkbox" checked={this.state.checked_radio_option===4} id={4} value={this.props.questions.options[3].option_value} />
+					      <input onChange={this.onClickRadio} class="mr2 ml4" type="checkbox" checked={this.state.checked_radio_option===4} id={4} value={this.props.questions.options[3].option_pk} />
 					      <label class="f4 i pl3 serif lh-copy">{this.props.questions.options[3].option_value}</label>
 					    </div>
 					</form>
@@ -90,19 +89,19 @@ class Question extends React.Component {
 		      	? <div>
 		      		<form class="center pa2 flex flex-column">
 					    <div class="flex items-center w-100 mb2">
-					      <input class="mr2 ml4" onChange={this.onClickCheck} type="checkbox" id={1}  value={this.props.questions.options[0].option_value} />
+					      <input class="mr2 ml4" onChange={this.onClickCheck} type="checkbox" id={1}  value={this.props.questions.options[0].option_pk} />
 					      <label class="serif pl3 f4 i lh-copy">{this.props.questions.options[0].option_value}</label>
 					    </div>
 					    <div class="flex items-center w-100 mb2">
-					      <input onChange={this.onClickCheck} class="mr2 ml4" type="checkbox" id={2}  value={this.props.questions.options[1].option_value} />
+					      <input onChange={this.onClickCheck} class="mr2 ml4" type="checkbox" id={2}  value={this.props.questions.options[1].option_pk} />
 					      <label class="f4 pl3 i serif lh-copy">{this.props.questions.options[1].option_value}</label>
 					    </div>
 					    <div class="flex items-center w-100 mb2">
-					      <input onChange={this.onClickCheck} class="mr2 ml4" type="checkbox" id={3}  value={this.props.questions.options[2].option_value} />
+					      <input onChange={this.onClickCheck} class="mr2 ml4" type="checkbox" id={3}  value={this.props.questions.options[2].option_pk} />
 					      <label  class="f4 i pl3 serif lh-copy">{this.props.questions.options[2].option_value}</label>
 					    </div>
 					    <div class="flex items-center w-100 mb2">
-					      <input onChange={this.onClickCheck} class="mr2 ml4" type="checkbox" id={4}  value={this.props.questions.options[3].option_value} />
+					      <input onChange={this.onClickCheck} class="mr2 ml4" type="checkbox" id={4}  value={this.props.questions.options[3].option_pk} />
 					      <label class="f4 i pl3 serif lh-copy">{this.props.questions.options[3].option_value}</label>
 					    </div>
 					</form>
