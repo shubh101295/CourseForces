@@ -12,8 +12,27 @@ const QuizInfoPage = (props) => {
 				</div>
 			</header>
 			<div className="w-50 center ma2 pa2">
-				<button onClick = {() => props.loadQuestions()} className="f6 link pointer br1 fr mr4 ph3 pv2 mb2 shadow-4 dib white bg-gray" > Take Quiz! </button>
+				<button onClick = {() => props.loadQuestions()} className="f6 link pointer br1 fr mr4 ph3 pv2 mb2 shadow-4 dib white bg-gray" > {props.role==='P'? "View Quiz" : "Take Quiz!"} </button>
+				{
+					props.role === 'P'
+					?  <div >
+							{
+							props.ans_vis 
+							? <button onClick = {() => props.loadMarkList()} className="f6 link pointer br1 fr mr4 ph3 pv2 mb2 shadow-4 dib white bg-gray" > View Marks List</button>
+							: <button onClick = {() => props.checkQuiz()} className="f6 link pointer br1 fr mr4 ph3 pv2 mb2 shadow-4 dib white bg-gray" > Check Quiz</button>
+								
+							}
+					   </div>
+					:  <div />
+				}
 			</div>
+			{
+			    props.role==='P'
+			    ? <div className = "w-100 mt4 pa2 flex">
+			    <button class="f6 link pointer br1 center fr ph4 pv3 mb2 shadow-4 dib white bg-red" onClick = {() => props.deleteQuiz()}  >Delete Quiz</button>
+			    </div>
+			    : <div />
+		  }
 		</div>
 	);
 } 

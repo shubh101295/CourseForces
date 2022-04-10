@@ -14,7 +14,9 @@ import CreateQuiz from "./components/CreateQuiz/CreateQuiz";
 import CreateCourse from "./components/CreateCourse/CreateCourse";
 import CreateQuestions from "./components/CreateQuestions/CreateQuestions";
 import QuizInfoPage from "./components/QuizInfoPage/QuizInfoPage";
+import MarkList from "./components/MarkList/MarkList";
 import {particlesOptions} from './ParticlesProps.js'
+
 // import {courses} from './Courses'
 // import {quizzes} from './quizzes'
 // import {students} from './students'
@@ -47,7 +49,8 @@ const initialState = {
   roles: [],
   quizzes: [],
   students: [],
-  questions: []
+  questions: [],
+  marks: []
 }
 
 class App extends Component{
@@ -278,6 +281,57 @@ class App extends Component{
       this.onRouteChange('CoursePage')
   }
 
+  deleteCourse = () => {
+    // Call Backend API to delete course
+
+    this.loadUser(this.state.user)
+    this.onRouteChange('home')
+
+  }
+
+
+  deleteQuiz = () => {
+    // Call Backend API to delete Quiz
+
+    this.loadQuizzes()
+
+  }
+
+  loadMarkList = () => {
+    // Load StudentList from Backend
+
+    fetch(`http://127.0.0.1:8000/quiz/show/marks/list/${this.state.courses[this.state.course_page.idx].id}/${this.state.quiz_page.pk}/`, {
+      method: 'get',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': this.state.user.token
+      },
+    })
+    .then(response => {
+      if(response.status===200)
+        return response.json()
+      else
+        throw new Error(response)
+    })
+    .then(data => {
+        let temp = []
+        for (var i = 0; i < data.length; i++) {
+          temp.push(data[i])
+        }
+        this.setState({
+          marks:temp 
+        });
+    })
+
+
+    this.onRouteChange('MarkList')
+
+  }
+
+  checkQuiz = () => {
+    // API call to backend to check quizzes
+    this.onRouteChange('CoursePage')
+  }
   loadQuestions = () => {
       fetch(`http://127.0.0.1:8000/quiz/view/${this.state.courses[this.state.course_page.idx].id}/${this.state.quiz_page.pk}/`, {
       method: 'get',
@@ -320,9 +374,7 @@ class App extends Component{
     this.onRouteChange('QuizInfoPage')
   }
 
-  onAnswerChange = (key) => {
-    
-  }
+  
   render(){
     return (
         <div className="App">
@@ -340,7 +392,7 @@ class App extends Component{
             : this.state.route==='register'
             ? <Register onRouteChange={this.onRouteChange} />
             : this.state.route==='CoursePage'
-            ? <QuizList loadQuizInfo = {this.loadQuizInfo} loadStudents = {this.loadStudents} onRouteChange={this.onRouteChange} course_code={this.state.course_page.displayed_course} role={this.state.course_page.role} quizzes = {this.state.quizzes} />
+            ? <QuizList deleteCourse={this.deleteCourse} loadQuizInfo = {this.loadQuizInfo} loadStudents = {this.loadStudents} onRouteChange={this.onRouteChange} course_code={this.state.course_page.displayed_course} role={this.state.course_page.role} quizzes = {this.state.quizzes} />
             : this.state.route==='StudentList'
             ? <StudentList course_code={this.state.course_page.displayed_course} onRouteChange={this.onRouteChange} students={this.state.students}/>
             : this.state.route==='InviteForm'
@@ -350,11 +402,13 @@ class App extends Component{
             : this.state.route==='CreateQuestions'
             ? <CreateQuestions loadQuizzes={this.loadQuizzes} quiz_pk = {this.state.quiz_page.pk}  course_pk = {this.state.courses[this.state.course_page.idx].id} token = {this.state.user.token} onRouteChange={this.onRouteChange} num={this.state.quiz_page.num} />
             : this.state.route==='QuizInfoPage'
-            ? <QuizInfoPage loadQuestions={this.loadQuestions} quiz={this.state.quizzes[this.state.quiz_page.displayed_quiz]} onRouteChange={this.onRouteChange} />
+            ? <QuizInfoPage checkQuiz={this.checkQuiz} loadMarkList = {this.loadMarkList} ans_vis={this.state.quizzes[this.state.quiz_page.displayed_quiz].answer_key_visible} deleteQuiz={this.deleteQuiz} loadQuestions={this.loadQuestions} quiz={this.state.quizzes[this.state.quiz_page.displayed_quiz]} onRouteChange={this.onRouteChange} role={this.state.course_page.role} />
             : this.state.route === 'QuestionList'
-            ? <QuestionList token={this.state.user.token} course_pk={this.state.courses[this.state.course_page.idx].id} quiz_pk = {this.state.quiz_page.pk} quiz={this.state.quizzes[this.state.quiz_page.displayed_quiz]} questions={this.state.questions} onRouteChange={this.onRouteChange} />
+            ? <QuestionList role={this.state.course_page.role} token={this.state.user.token} course_pk={this.state.courses[this.state.course_page.idx].id} quiz_pk = {this.state.quiz_page.pk} quiz={this.state.quizzes[this.state.quiz_page.displayed_quiz]} questions={this.state.questions} onRouteChange={this.onRouteChange} />
             : this.state.route==='CreateCourse'
             ? <CreateCourse onRouteChange={this.onRouteChange} data={this.state.user} loadUser = {this.loadUser} />
+            : this.state.route==='CreateCourse'
+            ? <MarkList marks = {this.state.marks} />
             : <p> Component not yet created! </p>
           }
         </div>
