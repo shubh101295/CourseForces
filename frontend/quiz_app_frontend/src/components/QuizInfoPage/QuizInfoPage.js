@@ -19,7 +19,7 @@ const QuizInfoPage = (props) => {
 							{
 							props.ans_vis 
 							? <button onClick = {() => props.loadMarkList()} className="f6 link pointer br1 fr mr4 ph3 pv2 mb2 shadow-4 dib white bg-gray" > View Marks List</button>
-							: <button onClick = {() => props.checkQuiz()} className="f6 link pointer br1 fr mr4 ph3 pv2 mb2 shadow-4 dib white bg-gray" > Check Quiz</button>
+							: <button onClick = {() => props.loadMarkList()} className="f6 link pointer br1 fr mr4 ph3 pv2 mb2 shadow-4 dib white bg-gray" > Check Quiz</button>
 								
 							}
 					   </div>

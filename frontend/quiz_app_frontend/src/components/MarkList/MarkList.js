@@ -1,13 +1,13 @@
 import React from 'react';
 import Marks from '../Marks/Marks';
 
-const StudentList = (props) => {
+const MarkList = (props) => {
   const allStudents = props.marks.map((user, i) => {
           return (
           <div>
               <div className="measure center">
-              <Marks.Fragment className="dt w-100 bb b--black-05 pb2 mt2">
-              <Student
+              <React.Fragment className="dt w-100 bb b--black-05 pb2 mt2">
+              <Marks
                 key={props.marks[i].user_pk}
                 marks = {props.marks[i].total_marks}
                 name={props.marks[i].name}
@@ -27,4 +27,4 @@ const StudentList = (props) => {
   );
 }
 
-export default StudentList;
+export default MarkList;

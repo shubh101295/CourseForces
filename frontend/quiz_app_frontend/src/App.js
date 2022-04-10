@@ -407,8 +407,8 @@ class App extends Component{
             ? <QuestionList role={this.state.course_page.role} token={this.state.user.token} course_pk={this.state.courses[this.state.course_page.idx].id} quiz_pk = {this.state.quiz_page.pk} quiz={this.state.quizzes[this.state.quiz_page.displayed_quiz]} questions={this.state.questions} onRouteChange={this.onRouteChange} />
             : this.state.route==='CreateCourse'
             ? <CreateCourse onRouteChange={this.onRouteChange} data={this.state.user} loadUser = {this.loadUser} />
-            : this.state.route==='CreateCourse'
-            ? <MarkList marks = {this.state.marks} />
+            : this.state.route==='MarkList'
+            ? <MarkList marks = {this.state.marks} onRouteChange={this.onRouteChange} />
             : <p> Component not yet created! </p>
           }
         </div>
