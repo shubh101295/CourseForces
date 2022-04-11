@@ -11,9 +11,13 @@ class MyUser(models.Model):
 		('MSE', 'Material Science and Engineering'),
 		('AE', 'Aerospace Engineering'),
 		('ME', 'Mechanical Engineering'),
-		('EE', 'Electrical Engineering')
+		('EE', 'Electrical Engineering'),
+		('MTH','Mathematics and Computing'),
+		('BSBE','Biological Science and BioEngineering'),
+		('CHE','Chemical Engineering'),
+		('CE','Civil Engineering'),
 	]
-    department = models.CharField(max_length=3,
+    department = models.CharField(max_length=4,
 						choices=department_options)
     password = models.CharField(max_length=70)
     verified = models.BooleanField(default = False)
