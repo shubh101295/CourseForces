@@ -44,7 +44,7 @@ class Option_in_question(models.Model):
 class QuizAttempt(models.Model):
 	submitted = models.BooleanField(default=False) # for saving the quiz
 	submission_time = models.DateTimeField(auto_now=True, auto_now_add=False)
-	total_marks =  models.FloatField(default=0.0)
+	total_marks =  models.CharField(max_length=1000,blank=True)
 
 class user_quizattempt(models.Model):
 	user = models.ForeignKey(MyUser , on_delete=models.CASCADE)

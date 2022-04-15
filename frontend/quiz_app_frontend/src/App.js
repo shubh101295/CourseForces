@@ -372,6 +372,7 @@ class App extends Component{
 
   checkQuiz = () => {
     // API call to backend to check quizzes
+    alert('hah')
     fetch(`http://127.0.0.1:8000/quiz/marks/calculate/`, {
       method: 'post',
       headers: {
@@ -394,7 +395,7 @@ class App extends Component{
     .catch(err=>{
       alert(err);
     })
-    this.onRouteChange('CoursePage')
+    this.onRouteChange('home')
   }
   loadQuestions = () => {
       fetch(`http://127.0.0.1:8000/quiz/view/${this.state.courses[this.state.course_page.idx].id}/${this.state.quiz_page.pk}/`, {

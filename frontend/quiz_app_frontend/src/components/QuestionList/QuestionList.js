@@ -16,6 +16,7 @@ class QuestionList extends React.Component {
 			submitted_time: '',
 			answers : arr
 		}
+		alert(this.props.questions.length)
 	}
 
 
@@ -55,32 +56,33 @@ class QuestionList extends React.Component {
 		else{
 			x = Array.from(ans)
 		}
-		// alert(x)
+		alert(x)
+		alert(this.state.answers.length)
 		for (var i = 0; i < this.state.answers.length; i++) {
 			if(i===idx){
-				// alert(i)
+				alert(i)
 				temp.push({
 					question_pk: this.props.questions[idx].question_pk,
 					answer:x
 				})
 				// alert(this.props.questions[idx].question_pk)
 				// alert(x)
-				// alert(temp[0].answer)
+				alert(temp[0].answer)
 				// alert(temp)
 			}
 			else{
-				// alert(this.state.answers[i])
+				alert(this.state.answers[i])
 				temp.push(this.state.answers[i])
-				// alert(temp)
+				alert(temp)
 			}
 		}
-		// alert(temp[0].answer)
+		// alert(temp[z].answer)
 
 		this.setState({
 			answers: temp 
 		},()=>console.log(this.state));
 		
-		// alert(this.state.answers[0].answer)
+		alert(this.state.answers[0].answer)
 		// alert(temp[0].answer)
 
 	}

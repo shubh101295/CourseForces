@@ -1,3 +1,5 @@
+import json
+
 from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -63,7 +65,8 @@ def quiz_in_a_course_list(request,course_pk):
 				"title":i.quiz.title,
 				"content":i.quiz.content,
 				"deadline":i.quiz.deadline,
-				"start_at":i.quiz.start_at,	
+				"start_at":i.quiz.start_at,
+				"answer_key_visible":i.quiz.answer_key_visible,	
 				"num":len(_current_quiz_questions)
 			}
 			course_data["quiz_list"].append(_current_quiz_data)
@@ -194,6 +197,7 @@ def view_quiz_questions(request,course_pk, quiz_pk):
 				"content":quiz_in_course_relations[0].quiz.content,
 				"start_at":quiz_in_course_relations[0].quiz.start_at,
 				"deadline":quiz_in_course_relations[0].quiz.deadline,
+				# "answer_key_visible":quiz_in_course_relations[0].quiz.answer_key_visible,
 				"questions":[]
 			}
 			question_relation = question_in_quiz.objects.filter(Q(quiz=quiz_pk))
@@ -216,6 +220,7 @@ def view_quiz_questions(request,course_pk, quiz_pk):
 						}
 						_current_question_data["options"].append(_curent_option_data)
 				quiz_data["questions"].append(_current_question_data)
+				print(json.dumps(quiz_data,indent=4))
 			return Response(quiz_data,status=status.HTTP_200_OK)
 		return Response("No such quiz found in the course", status=status.HTTP_400_BAD_REQUEST)
 	return Response(util_data["error_message"], status=util_data["status"])
@@ -320,12 +325,15 @@ def view_quiz_marks_list(request,course_pk, quiz_pk):
 					current_user_attempt = user_quizattempt.objects.filter(Q(quiz_attempt=i.quiz_attempt))
 					print(current_user_attempt)
 					print(i)
+					user_marks = json.loads(i.quiz_attempt.total_marks)
+
 					return_data.append({
 							"name":current_user_attempt[0].user.name,
 							"username":current_user_attempt[0].user.username,
 							"user_pk":current_user_attempt[0].user.pk,
-							"total_marks":i.quiz_attempt.total_marks
+							"total_marks":user_marks["total"]
 						})
+
 				return Response(return_data,status=status.HTTP_200_OK)
 			return Response({"message":"No such quiz found in the course"}, status=status.HTTP_400_BAD_REQUEST)
 		return Response({"message":"You are not Professor in the course"},status=status.HTTP_401_UNAUTHORIZED)
@@ -345,13 +353,23 @@ def calculate_all_student_marks(request):
 					for qa in attempts:
 						current_user_question_attempts = question_attempt.objects.filter(Q(quiz_attempt=qa.quiz_attempt))
 						current_user_marks = 0
+						current_user_details = {}
 						for ques in current_user_question_attempts:
 							current_options = Option_in_question.objects.filter(Q(question=ques.question)).values()
 							option_count = len(current_options)
-							current_user_marks += marks_for_a_question(ques.question.question_type,ques.question.answer,\
+							current_ques_marks = marks_for_a_question(ques.question.question_type,ques.question.answer,\
 														ques.student_answer,ques.question.positive_marks,ques.question.negative_marks,ques.question.partial_allowed,option_count)
-						qa.quiz_attempt.total_marks=current_user_marks
-						qa.quiz_attempt.save()					
+							current_user_details[str(ques.question.pk)] = current_ques_marks
+							current_user_marks+=current_ques_marks
+						current_user_details["total"] = current_user_marks
+						print(current_user_details)
+						qa.quiz_attempt.total_marks=json.dumps(current_user_details)
+						qa.quiz_attempt.save()			
+					current_quiz = Quiz.objects.filter(Q(pk=quiz_pk))
+					current_quiz = current_quiz[0]
+					current_quiz.checked = True 
+					current_quiz.answer_key_visible = True
+					current_quiz.save()
 					return Response({"message":"calculated all student marks"},status=status.HTTP_200_OK)
 				return Response({"message":"No such quiz found in the course"}, status=status.HTTP_400_BAD_REQUEST)
 			return Response({"message":"quiz_pk should not be empty"},status=status.HTTP_400_BAD_REQUEST)
