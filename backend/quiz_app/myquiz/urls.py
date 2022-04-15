@@ -2,8 +2,8 @@ from django.urls import path,include
 
 from .views import (
     add_quiz,add_question,delete_question,view_quiz_questions,
-    quiz_in_a_course_list,make_a_quiz_submission,view_quiz_marks_list
-
+    quiz_in_a_course_list,make_a_quiz_submission,view_quiz_marks_list,
+    calculate_all_student_marks
 )
 
 urlpatterns = [
@@ -14,5 +14,5 @@ urlpatterns = [
 	path('view/<int:course_pk>/',quiz_in_a_course_list, name="quiz_in_a_course_list"),
 	path('make/submission/',make_a_quiz_submission, name="make_a_quiz_submission"),
 	path('show/marks/list/<int:course_pk>/<int:quiz_pk>/',view_quiz_marks_list, name="view_quiz_marks_list"),
-
+	path('marks/calculate/',calculate_all_student_marks,name="calculate_all_student_marks")
 ]
