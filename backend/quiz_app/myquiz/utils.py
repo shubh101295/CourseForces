@@ -51,3 +51,27 @@ def marks_for_a_question(question_type,question_answer,student_answer,positive_m
 		if i not in correct_options:
 			return -1*negtive_marks
 	return (len(student_options)/option_count)*positive_marks
+
+def delete_every_information_for_a_quiz(quiz_pk):
+	question_in_current_quiz = question_in_quiz.objects.filter(Q(quiz=quiz_pk))
+	questions = [_q.question for _q in question_in_current_quiz]
+	question_pks = [_q.question.pk for _q in question_in_current_quiz]
+	option_in_quiz = []
+	for _q_pk in question_pks:
+		current_options = Option_in_question.objects.filter(Q(question=_q_pk))
+		for _o in current_options:
+			option_in_quiz.append(_o.option)
+	print(questions)
+	print(option_in_quiz)
+	quiz_attempt_response = quiz_quizattempt.objects.filter(Q(quiz=quiz_pk))
+	# print(quiz_attempt_response)
+	current_quiz_attempts = [_qa.quiz_attempt for _qa in quiz_attempt_response]
+	print(current_quiz_attempts)	
+	for q in questions:
+		q.delete()
+	for o in option_in_quiz:
+		o.delete()
+	for qa in current_quiz_attempts:
+		qa.delete()
+	current_quiz = Quiz.objects.filter(Q(pk=quiz_pk))
+	current_quiz.delete()

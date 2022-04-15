@@ -6,7 +6,7 @@ from rest_framework import status
 # Create your views here.
 
 from .models import *
-from .utils import user_in_course_details,marks_for_a_question
+from .utils import user_in_course_details,marks_for_a_question,delete_every_information_for_a_quiz
 from .serializers import QuizSerializer,QuestionSerializer,OptionSerializer,QuizAttemptSerializer
 from myusers.utils import getUser
 from django.db.models import Q 
@@ -351,12 +351,41 @@ def calculate_all_student_marks(request):
 							current_user_marks += marks_for_a_question(ques.question.question_type,ques.question.answer,\
 														ques.student_answer,ques.question.positive_marks,ques.question.negative_marks,ques.question.partial_allowed,option_count)
 						qa.quiz_attempt.total_marks=current_user_marks
-						qa.quiz_attempt.save()
-					
+						qa.quiz_attempt.save()					
 					return Response({"message":"calculated all student marks"},status=status.HTTP_200_OK)
 				return Response({"message":"No such quiz found in the course"}, status=status.HTTP_400_BAD_REQUEST)
 			return Response({"message":"quiz_pk should not be empty"},status=status.HTTP_400_BAD_REQUEST)
 		return Response({"message":"You are not Professor in the course"},status=status.HTTP_401_UNAUTHORIZED)
 	return Response({"message":util_data["error_message"]}, status=util_data["status"])
 
+@api_view(["DELETE"])
+def delete_a_quiz(request):
+	user = getUser(request)
+	util_data,course = user_in_course_details(user,request.data.get("course_pk",""))
+	if util_data["allowed"]:
+		if util_data["relation"] == 'P': 
+			quiz_pk = request.data.get("quiz_pk", "")
+			if quiz_pk!="":
+				quiz_in_course_relations = quiz_in_course.objects.filter(Q(course=course) & Q(quiz=quiz_pk))
+				if len(quiz_in_course_relations)==1:
+					delete_every_information_for_a_quiz(quiz_pk)
+					return Response({"message":"Succesfully deleted the quiz"},status=status.HTTP_200_OK)
+				return Response({"message":"No such quiz found in the course"}, status=status.HTTP_400_BAD_REQUEST)
+			return Response({"message":"quiz_pk should not be empty"},status=status.HTTP_400_BAD_REQUEST)
+		return Response({"message":"You are not Professor in the course"},status=status.HTTP_401_UNAUTHORIZED)
+	return Response({"message":util_data["error_message"]}, status=util_data["status"])
 	
+@api_view(["DELETE"])
+def delete_a_course(request):
+	user = getUser(request)
+	util_data,course = user_in_course_details(user,request.data.get("course_pk",""))
+	if util_data["allowed"]:
+		if util_data["relation"] == 'P': 
+			quiz_in_course_response = quiz_in_course.objects.filter(Q(course=course))
+			print(quiz_in_course_response)
+			for _quiz in quiz_in_course_response:
+				delete_every_information_for_a_quiz(_quiz.quiz.pk)
+			course.delete()
+			return Response({"message":"Succesfully deleted the course"},status=status.HTTP_200_OK)
+		return Response({"message":"You are not Professor in the course"},status=status.HTTP_401_UNAUTHORIZED)
+	return Response({"message":util_data["error_message"]}, status=util_data["status"])
