@@ -21,8 +21,7 @@ class Signin extends React.Component {
     fetch('http://127.0.0.1:8000/users/auth/login/', {
       method: 'post',
       headers: {
-        'Content-Type': 'application/json',
-        // 'Authorization':'s2cQhLMEzKy3nXEvDzjc'
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         value: this.state.signInEmail,

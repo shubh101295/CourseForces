@@ -278,12 +278,33 @@ class App extends Component{
         alert(error)
       })
 
-      this.onRouteChange('CoursePage')
+      this.onRouteChange('home')
   }
 
   deleteCourse = () => {
     // Call Backend API to delete course
 
+    fetch(`http://127.0.0.1:8000/quiz/delete/course/`, {
+      method: 'delete',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': this.state.user.token
+      },
+      body: JSON.stringify({
+        course_pk: this.state.courses[this.state.course_page.idx].id,
+      })
+    })
+    .then(response => {return response.json()})
+    .then(data => {
+      if (data.message === "Succesfully deleted the course") {
+        alert(data.message)
+      }
+      else
+        throw new Error(data.message)
+    })
+    .catch(err=>{
+      alert(err);
+    })
     this.loadUser(this.state.user)
     this.onRouteChange('home')
 
@@ -291,7 +312,28 @@ class App extends Component{
 
 
   deleteQuiz = () => {
-    // Call Backend API to delete Quiz
+     fetch(`http://127.0.0.1:8000/quiz/delete/`, {
+      method: 'delete',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': this.state.user.token
+      },
+      body: JSON.stringify({
+        course_pk: this.state.courses[this.state.course_page.idx].id,
+        quiz_pk: this.state.quiz_page.pk
+      })
+    })
+    .then(response => {return response.json()})
+    .then(data => {
+      if (data.message === "Succesfully deleted the quiz") {
+        alert(data.message)
+      }
+      else
+        throw new Error(data.message)
+    })
+    .catch(err=>{
+      alert(err);
+    })
 
     this.loadQuizzes()
 
@@ -330,6 +372,28 @@ class App extends Component{
 
   checkQuiz = () => {
     // API call to backend to check quizzes
+    fetch(`http://127.0.0.1:8000/quiz/marks/calculate/`, {
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': this.state.user.token
+      },
+      body: JSON.stringify({
+        course_pk: this.state.courses[this.state.course_page.idx].id,
+        quiz_pk: this.state.quiz_page.pk
+      })
+    })
+    .then(response => {return response.json()})
+    .then(data => {
+      if (data.message === "calculated all student marks") {
+        alert("Succesfully calculated marks, you may now view the marklist of students!");
+      }
+      else
+        throw new Error(data.message)
+    })
+    .catch(err=>{
+      alert(err);
+    })
     this.onRouteChange('CoursePage')
   }
   loadQuestions = () => {
