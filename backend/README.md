@@ -451,3 +451,41 @@ Output =
     }
 ]
 ```
+
+```
+Route = /quiz/marks/calculate/
+Task - Calculate marks of all the students
+Headers should contain "Authorization" field which stores the token
+METHOD - POST
+
+Input format
+{
+    "course_pk":<int>,
+    "quiz_pk":<int>
+}
+```
+
+```
+Route = /quiz/delete/
+Task - Delete a quiz
+Headers should contain "Authorization" field which stores the token
+METHOD - DELETE
+
+Input format
+{
+    "course_pk":<int>,
+    "quiz_pk":<int>
+}
+```
+
+```
+Route = /quiz/delete/course/
+Task - Delete a course
+Headers should contain "Authorization" field which stores the token
+METHOD - DELETE
+
+Input format
+{
+    "course_pk":<int>
+}
+```
