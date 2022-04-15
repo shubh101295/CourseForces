@@ -19,7 +19,11 @@ class QuestionList extends React.Component {
 		alert(this.props.questions.length)
 	}
 
-
+	st = (temp) => {
+		this.setState({
+			answers:temp 
+		});
+	}
 	onSubmit = () =>{
 		alert(this.state.answers)
 		fetch('http://127.0.0.1:8000/quiz/make/submission/', {
@@ -78,9 +82,7 @@ class QuestionList extends React.Component {
 		}
 		// alert(temp[z].answer)
 
-		this.setState({
-			answers: temp 
-		},()=>console.log(this.state));
+		this.st(temp)
 		
 		alert(this.state.answers[0].answer)
 		// alert(temp[0].answer)
