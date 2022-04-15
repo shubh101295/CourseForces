@@ -63,6 +63,9 @@ class QuestionList extends React.Component {
 					question_pk: this.props.questions[idx].question_pk,
 					answer:x
 				})
+				// alert(this.props.questions[idx].question_pk)
+				// alert(x)
+				// alert(temp[0].answer)
 				// alert(temp)
 			}
 			else{
@@ -71,9 +74,14 @@ class QuestionList extends React.Component {
 				// alert(temp)
 			}
 		}
+		// alert(temp[0].answer)
+
 		this.setState({
 			answers: temp 
-		});
+		},()=>console.log(this.state));
+		
+		// alert(this.state.answers[0].answer)
+		// alert(temp[0].answer)
 
 	}
 	render(){
