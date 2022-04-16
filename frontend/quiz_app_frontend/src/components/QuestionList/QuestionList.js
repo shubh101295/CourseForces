@@ -60,8 +60,8 @@ class QuestionList extends React.Component {
 		else{
 			x = Array.from(ans)
 		}
-		alert(x)
-		alert(this.state.answers.length)
+		// alert(x)
+		// alert(this.state.answers.length)
 		for (var i = 0; i < this.state.answers.length; i++) {
 			if(i===idx){
 				alert(i)
@@ -71,20 +71,20 @@ class QuestionList extends React.Component {
 				})
 				// alert(this.props.questions[idx].question_pk)
 				// alert(x)
-				alert(temp[0].answer)
+				// alert(temp[0].answer)
 				// alert(temp)
 			}
 			else{
-				alert(this.state.answers[i])
+				// alert(this.state.answers[i])
 				temp.push(this.state.answers[i])
-				alert(temp)
+				// alert(temp)
 			}
 		}
 		// alert(temp[z].answer)
 
 		this.st(temp)
 		
-		alert(this.state.answers[0].answer)
+		// alert(this.state.answers[0].answer)
 		// alert(temp[0].answer)
 
 	}
@@ -103,6 +103,12 @@ class QuestionList extends React.Component {
               positive_marks={this.props.questions[i].positive_marks}
               negative_marks={this.props.questions[i].negative_marks}
               onChangeAnswer = {this.onChangeAnswer}
+              score={this.props.questions[i].your_score}
+              score_vis = {this.props.questions[i].your_score_visible}
+              user_answer_vis = {this.props.questions[i].user_answer_visible}
+              user_answer = {this.props.questions[i].user_answer}
+              correct_answer_vis = {this.props.questions[i].correct_answer_visible}
+              correct_answer = {this.props.questions[i].correct_answer}
               />
               </React.Fragment>
           );
@@ -114,7 +120,7 @@ class QuestionList extends React.Component {
 				{allQuestions}
 				<div className="w-100 center">
 				{
-					this.props.role === 'S'
+					this.props.show_submit_button 
 					? <button class="center f6 link pointer br1 fr mr4 ph3 pv2 mb2 shadow-4 dib white bg-gray" onClick={this.onSubmit}> Submit </button>
 					: <div />
 				}</div>

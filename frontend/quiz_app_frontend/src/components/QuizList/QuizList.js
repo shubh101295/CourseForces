@@ -12,6 +12,8 @@ const QuizList = (props) => {
               idx={i}
               loadQuizInfo = {props.loadQuizInfo}
               quiz_title={props.quizzes[i].title}
+              show_score = {props.quizzes[i].show_total_score}
+              score = {props.quizzes[i].total_score}
               />
               </React.Fragment>
           );
