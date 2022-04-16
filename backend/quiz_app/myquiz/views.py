@@ -12,6 +12,9 @@ from .utils import user_in_course_details,marks_for_a_question,delete_every_info
 from .serializers import QuizSerializer,QuestionSerializer,OptionSerializer,QuizAttemptSerializer
 from myusers.utils import getUser
 from django.db.models import Q 
+from quiz_app.email_settings import *
+from django.core.mail import send_mail
+
 
 @api_view(["POST"])
 def add_quiz(request):
@@ -419,6 +422,11 @@ def calculate_all_student_marks(request):
 							current_user_marks+=current_ques_marks
 						current_user_details["total"] = current_user_marks
 						print(current_user_details)
+						current_user_email_title = EMAIL_TITLE["COURSE_QUIZ_CHECK"].format(quiz_title=quiz_in_course_relations[0].quiz.title,course_code=course.course_code)
+						user_quizattempt_response = user_quizattempt.objects.filter(Q(quiz_attempt=qa.quiz_attempt))
+						current_user_email_content = EMAIL_CONTENT["COURSE_QUIZ_CHECK"].format(name1=user_quizattempt_response[0].user.username,quiz_title=quiz_in_course_relations[0].quiz.title,course_code=course.course_code,score=str(current_user_marks))
+						print("SENDING MAIL TO ",user_quizattempt_response[0].user.email)
+						send_mail(current_user_email_title , current_user_email_content , DEFAULT_FROM_EMAIL , [user_quizattempt_response[0].user.email])
 						qa.quiz_attempt.total_marks=json.dumps(current_user_details)
 						qa.quiz_attempt.save()			
 					current_quiz = Quiz.objects.filter(Q(pk=quiz_pk))
