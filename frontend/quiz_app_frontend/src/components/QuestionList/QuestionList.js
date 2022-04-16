@@ -103,6 +103,12 @@ class QuestionList extends React.Component {
               positive_marks={this.props.questions[i].positive_marks}
               negative_marks={this.props.questions[i].negative_marks}
               onChangeAnswer = {this.onChangeAnswer}
+              score={this.props.questions[i].your_score}
+              score_vis = {this.props.questions[i].your_score_visible}
+              user_answer_vis = {this.props.questions[i].user_answer_visible}
+              user_answer = {this.props.questions[i].user_answer}
+              correct_answer_vis = {this.props.questions[i].correct_answer_visible}
+              correct_answer = {this.props.questions[i].correct_answer}
               />
               </React.Fragment>
           );

@@ -11,8 +11,20 @@ const QuizInfoPage = (props) => {
 				</h4>
 				</div>
 			</header>
+				<h4 className="f4 fw1 georgia i">
+				Start Time: {props.quiz.start_at}
+				</h4>
+				<h4 className="f4 red fw1 georgia i">
+				Deadline: {props.quiz.deadline}
+				</h4>
 			<div className="w-50 center ma2 pa2">
-				<button onClick = {() => props.loadQuestions()} className="f6 link pointer br1 fr mr4 ph3 pv2 mb2 shadow-4 dib white bg-gray" > {props.role==='P'? "View Quiz" : "Take Quiz!"} </button>
+				<button onClick = {() => props.loadQuestions()} className="f6 link pointer br1 fr mr4 ph3 pv2 mb2 shadow-4 dib white bg-gray" > {
+					props.role==='P'
+					? "View Quiz" : 
+					props.quiz.show_total_score
+					? "View Result"
+					: "Take Quiz!"
+				} </button>
 				{
 					props.role === 'P'
 					?  <div >

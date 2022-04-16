@@ -62,7 +62,7 @@ class Question extends React.Component {
 	  	<div>
 		    <div className='flex flex-column w-75 center tc bg-light-yellow br3 pa3 ma3 dib bw2 shadow-5'>
 		      <h2 className="serif f3"> Question #{this.props.num}: {this.props.content} </h2>
-		      <h4 className="f4 red mt0 i garamond" > Positive Score: {this.props.positive_marks}, Negative Score: {this.props.negative_marks} </h4>
+		      <h4 className="f4 red mt0 i garamond" > Positive Score: {this.props.positive_marks}, Negative Score: {this.props.negative_marks} {this.props.score_vis? `, Your Score: ${this.props.score}`:``} </h4>
 		      {
 		      	this.props.question_type==='S'
 		      	? <div>
@@ -110,6 +110,16 @@ class Question extends React.Component {
 		      	?  <textarea id="comment" onChange={this.onChangeSub} class="db center border-box hover-black w-100 measure ba b--black-20 pa2 br2 mb2" aria-describedby="comment-desc"></textarea>
 		      	: <h2 className="red"> Invalid Question Type!</h2>
 		      }
+		    {
+		    	this.props.user_answer_vis
+		    	? <h4 > Your answer: {this.props.user_answer} </h4>
+		    	: <div />
+		    }
+		    {
+		    	this.props.correct_answer_vis
+		    	? <h4 className="green "> Correct answer: {this.props.correct_answer} </h4>
+		    	: <div />
+		    }
 		    </div>
 	    </div>
 	  );

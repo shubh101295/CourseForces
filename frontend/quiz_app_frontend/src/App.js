@@ -398,6 +398,10 @@ class App extends Component{
     this.onRouteChange('home')
   }
   loadQuestions = () => {
+      if(!this.state.quizzes[this.state.quiz_page.displayed_quiz].show_take_quiz){
+        alert("The Quiz has not started yet!");
+        return
+      }
       fetch(`http://127.0.0.1:8000/quiz/view/${this.state.courses[this.state.course_page.idx].id}/${this.state.quiz_page.pk}/`, {
       method: 'get',
       headers: {
