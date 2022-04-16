@@ -220,7 +220,7 @@ def view_quiz_questions(request,course_pk, quiz_pk):
 						}
 						_current_question_data["options"].append(_curent_option_data)
 				quiz_data["questions"].append(_current_question_data)
-				# print(json.dumps(quiz_data,indent=4))
+				print(quiz_data)
 			return Response(quiz_data,status=status.HTTP_200_OK)
 		return Response("No such quiz found in the course", status=status.HTTP_400_BAD_REQUEST)
 	return Response(util_data["error_message"], status=util_data["status"])

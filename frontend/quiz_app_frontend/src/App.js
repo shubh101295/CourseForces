@@ -469,7 +469,7 @@ class App extends Component{
             : this.state.route==='QuizInfoPage'
             ? <QuizInfoPage checkQuiz={this.checkQuiz} loadMarkList = {this.loadMarkList} ans_vis={this.state.quizzes[this.state.quiz_page.displayed_quiz].answer_key_visible} deleteQuiz={this.deleteQuiz} loadQuestions={this.loadQuestions} quiz={this.state.quizzes[this.state.quiz_page.displayed_quiz]} onRouteChange={this.onRouteChange} role={this.state.course_page.role} />
             : this.state.route === 'QuestionList'
-            ? <QuestionList role={this.state.course_page.role} token={this.state.user.token} course_pk={this.state.courses[this.state.course_page.idx].id} quiz_pk = {this.state.quiz_page.pk} quiz={this.state.quizzes[this.state.quiz_page.displayed_quiz]} questions={this.state.questions} onRouteChange={this.onRouteChange} />
+            ? <QuestionList show_submit_button={this.state.quizzes[this.state.quiz_page.displayed_quiz].show_submit_button} role={this.state.course_page.role} token={this.state.user.token} course_pk={this.state.courses[this.state.course_page.idx].id} quiz_pk = {this.state.quiz_page.pk} quiz={this.state.quizzes[this.state.quiz_page.displayed_quiz]} questions={this.state.questions} onRouteChange={this.onRouteChange} />
             : this.state.route==='CreateCourse'
             ? <CreateCourse onRouteChange={this.onRouteChange} data={this.state.user} loadUser = {this.loadUser} />
             : this.state.route==='MarkList'
