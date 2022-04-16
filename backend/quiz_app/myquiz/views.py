@@ -245,7 +245,7 @@ def view_quiz_questions(request,course_pk, quiz_pk):
 						print(correct_options)
 						print(options_data[correct_options[0]])
 						correct_answers_values = [options_data[x] for x in correct_options]
-						_current_question_data["correct_answer"] = '\n'.join(correct_answers_values)
+						_current_question_data["correct_answer"] = ','.join(correct_answers_values)
 					else:
 						_current_question_data["correct_answer"] = _ques.question.answer 
 				_current_question_data["user_answer_visible"] = False
@@ -258,7 +258,7 @@ def view_quiz_questions(request,course_pk, quiz_pk):
 						if _ques.question.question_type=="M" or _ques.question.question_type=="S":
 							user_options = qqa.student_answer.split(';')
 							user_answers_values = [options_data[x] for x in user_options]
-							_current_question_data["user_answer"] = '\n'.join(user_answers_values)
+							_current_question_data["user_answer"] = ','.join(user_answers_values)
 						else:
 							_current_question_data["user_answer"] = qqa.student_answer
 						if quiz_in_course_relations[0].quiz.checked == True:
