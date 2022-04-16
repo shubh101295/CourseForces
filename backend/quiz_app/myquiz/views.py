@@ -8,7 +8,7 @@ from rest_framework import status
 # Create your views here.
 
 from .models import *
-from .utils import user_in_course_details,marks_for_a_question,delete_every_information_for_a_quiz
+from .utils import user_in_course_details,marks_for_a_question,delete_every_information_for_a_quiz,find_quiz_attempt_with_user_and_quiz
 from .serializers import QuizSerializer,QuestionSerializer,OptionSerializer,QuizAttemptSerializer
 from myusers.utils import getUser
 from django.db.models import Q 
@@ -201,6 +201,19 @@ def view_quiz_questions(request,course_pk, quiz_pk):
 				"questions":[]
 			}
 			question_relation = question_in_quiz.objects.filter(Q(quiz=quiz_pk))
+			current_user_quiz_attempt = find_quiz_attempt_with_user_and_quiz(user,quiz_in_course_relations[0].quiz)
+			current_user_marks_details = {}
+			if current_user_quiz_attempt is not None and quiz_in_course_relations[0].quiz.checked==True:
+				# print(current_user_quiz_attempt)
+				# print(current_user_quiz_attempt.pk)
+				# print(current_user_quiz_attempt.total_marks)
+				# print(current_user_quiz_attempt._meta)
+
+				# for a in current_user_quiz_attempt:
+				# 	print(a)
+
+				current_user_marks_details = json.loads(current_user_quiz_attempt.total_marks)
+
 			for _ques in question_relation:
 				_current_question_data = {
 					"question_pk":_ques.question.pk,
@@ -210,6 +223,7 @@ def view_quiz_questions(request,course_pk, quiz_pk):
 					"negative_marks":_ques.question.negative_marks,
 					"partial_allowed":_ques.question.partial_allowed
 				}
+				options_data = {}
 				if _ques.question.question_type=="M" or _ques.question.question_type=="S":
 					_current_question_data["options"] = []
 					options_in_questions_relations = Option_in_question.objects.filter(Q(question=_ques.question.pk))
@@ -218,7 +232,37 @@ def view_quiz_questions(request,course_pk, quiz_pk):
 							"option_value":_option.option.option_value,
 							"option_pk":_option.option.pk
 						}
+						options_data[str(_option.option.pk)] = _option.option.option_value
 						_current_question_data["options"].append(_curent_option_data)
+				print(options_data)
+				_current_question_data["correct_answer_visible"] = False
+				if util_data["relation"]=='P' or quiz_in_course_relations[0].quiz.answer_key_visible==True:
+					_current_question_data["correct_answer_visible"] = True 
+					if _ques.question.question_type=="M" or _ques.question.question_type=="S":
+						correct_options = _ques.question.answer.split(';')
+						print(correct_options)
+						print(options_data[correct_options[0]])
+						correct_answers_values = [options_data[x] for x in correct_options]
+						_current_question_data["correct_answer"] = '\n'.join(correct_answers_values)
+					else:
+						_current_question_data["correct_answer"] = _ques.question.answer 
+				_current_question_data["user_answer_visible"] = False
+				_current_question_data["your_score_visible"] = False
+				if util_data["relation"]=='S':
+					if current_user_quiz_attempt is not None:
+						qqa = question_attempt.objects.filter(Q(question=_ques.question) & Q(quiz_attempt=current_user_quiz_attempt))
+						qqa = qqa[0]
+						_current_question_data["user_answer_visible"] = True 
+						if _ques.question.question_type=="M" or _ques.question.question_type=="S":
+							user_options = qqa.student_answer.split(';')
+							user_answers_values = [options_data[x] for x in user_options]
+							_current_question_data["user_answer"] = '\n'.join(user_answers_values)
+						else:
+							_current_question_data["user_answer"] = qqa.student_answer
+						if quiz_in_course_relations[0].quiz.checked == True:
+							_current_question_data["your_score_visible"] = True 
+							_current_question_data["your_score"] = current_user_marks_details[str(_ques.question.pk)]
+
 				quiz_data["questions"].append(_current_question_data)
 				# print(json.dumps(quiz_data,indent=4))
 			return Response(quiz_data,status=status.HTTP_200_OK)
