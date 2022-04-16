@@ -68,7 +68,7 @@ def quiz_in_a_course_list(request,course_pk):
 				"title":i.quiz.title,
 				"content":i.quiz.content,
 				"deadline":time_formating(i.quiz.deadline),
-				"start_at":time_formating(i.quiz.start_at),
+				"start_at":time_formating(i.quiz.start_at),				
 				"answer_key_visible":i.quiz.answer_key_visible,	
 				"num":len(_current_quiz_questions),
 				"show_submit_button":True,
@@ -86,6 +86,7 @@ def quiz_in_a_course_list(request,course_pk):
 				_current_quiz_data["show_take_quiz"] = True
 			course_data["quiz_list"].append(_current_quiz_data)
 		course_data["message"]="ok"
+		print(course_data)
 		return Response(course_data,status=status.HTTP_200_OK)
 	return Response({"message":util_data["error_message"]}, status=util_data["status"])
 

@@ -119,7 +119,7 @@ def user_login(request):
 							}, status=status.HTTP_200_OK)
 					return Response({"message" : "Wrong Password"} ,status=status.HTTP_401_UNAUTHORIZED)
 				return Response({"message":"First activate the user."} ,status=status.HTTP_400_BAD_REQUEST) 
-			return Response({"message":"There is no user registered with "}+ value + " username/email" , status=status.HTTP_400_BAD_REQUEST)
+			return Response({"message":"There is no user registered with "+ value + " username/email" }, status=status.HTTP_400_BAD_REQUEST)
 		return Response({"message":"Email/username field should be non empty"}, status=status.HTTP_400_BAD_REQUEST)
 	return Response({"message":"User is already logged in"} , status=status.HTTP_403_FORBIDDEN)
 

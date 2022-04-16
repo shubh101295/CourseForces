@@ -107,7 +107,7 @@ def view_my_courses(request):
 	user = getUser(request)
 	if user is not None:
 		if user.verified == True:
-			courses = user_in_course.objects.filter(Q(user=user)).values()
+			courses = user_in_course.objects.filter(Q(user=user) & Q(request_accepted=True)).values()
 			for i in range(len(courses)):
 				my_course = courses[i]
 				my_course["course"] = (Course.objects.filter(pk=courses[i]["course_id"]).values())[0]

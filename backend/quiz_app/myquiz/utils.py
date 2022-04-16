@@ -1,3 +1,8 @@
+import pytz 
+import tzlocal
+
+
+
 from rest_framework import status
 from django.db.models import Q 
 
@@ -87,4 +92,6 @@ def find_quiz_attempt_with_user_and_quiz(user,quiz):
 	return None
 
 def time_formating(_time):
-	return _time.strftime('%H:%M %d %b,%Y')
+	ltz = tzlocal.get_localzone()
+	localtz = _time.replace(tzinfo=pytz.utc).astimezone(ltz)
+	return localtz.strftime('%H:%M %d %b,%Y')

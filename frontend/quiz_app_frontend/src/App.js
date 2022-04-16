@@ -372,7 +372,7 @@ class App extends Component{
 
   checkQuiz = () => {
     // API call to backend to check quizzes
-    alert('hah')
+    alert('Click OK to start checking quiz marks, might take a while to check...')
     fetch(`http://127.0.0.1:8000/quiz/marks/calculate/`, {
       method: 'post',
       headers: {
@@ -388,6 +388,7 @@ class App extends Component{
     .then(data => {
       if (data.message === "calculated all student marks") {
         alert("Succesfully calculated marks, you may now view the marklist of students!");
+            this.onRouteChange('home')
       }
       else
         throw new Error(data.message)
@@ -395,7 +396,6 @@ class App extends Component{
     .catch(err=>{
       alert(err);
     })
-    this.onRouteChange('home')
   }
   loadQuestions = () => {
       if(!this.state.quizzes[this.state.quiz_page.displayed_quiz].show_take_quiz){
