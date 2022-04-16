@@ -16,7 +16,7 @@ class QuestionList extends React.Component {
 			submitted_time: '',
 			answers : arr
 		}
-		alert(this.props.questions.length)
+		// alert(this.props.questions.length)
 	}
 
 	st = (temp) => {
@@ -25,7 +25,7 @@ class QuestionList extends React.Component {
 		});
 	}
 	onSubmit = () =>{
-		alert(this.state.answers)
+		// alert(this.state.answers)
 		fetch('http://127.0.0.1:8000/quiz/make/submission/', {
 	      method: 'post',
 	      headers: {
@@ -79,10 +79,12 @@ class QuestionList extends React.Component {
 				temp.push(this.state.answers[i])
 				// alert(temp)
 			}
+			if(i+1===this.state.answers.length){
+				this.st(temp)
+			}
 		}
 		// alert(temp[z].answer)
 
-		this.st(temp)
 		
 		// alert(this.state.answers[0].answer)
 		// alert(temp[0].answer)

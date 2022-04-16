@@ -61,7 +61,7 @@ class App extends Component{
   }
 
   loadUser = (data) => {
-    alert("Entered loadUser",data)
+    // alert("Entered loadUser",data)
     this.setState({user:{
       token: data.token,
       name: data.name,
@@ -79,7 +79,7 @@ class App extends Component{
     })
       .then(response => {
         if(response.status === 200){
-          alert("Course List Fetched!")
+          // alert("Course List Fetched!")
           return response.json()
         }
         else{
@@ -99,7 +99,7 @@ class App extends Component{
         });
       })
       .catch(error => {
-        alert("Something's wrong, an error occured :(")
+        // alert("Something's wrong, an error occured :(")
         alert(error)
       })
 
@@ -133,7 +133,7 @@ class App extends Component{
       },
     })
       .then(response => {
-        alert(response.status);
+        // alert(response.status);
       })
       this.setState(initialState)
       return
@@ -163,7 +163,7 @@ class App extends Component{
     })
       .then(response => {
         if(response.status === 200){
-          alert("Quiz List Fetched!")
+          // alert("Quiz List Fetched!")
           return response.json()
         }
         else{
@@ -180,7 +180,7 @@ class App extends Component{
         });
       })
       .catch(error => {
-        alert("Something's wrong, an error occured :(")
+        // alert("Something's wrong, an error occured :(")
         alert(error)
       })
 
@@ -212,7 +212,7 @@ class App extends Component{
         }
       })
       .catch(error => {
-        alert("Something's wrong, an error occured :(")
+        // alert("Something's wrong, an error occured :(")
         alert(error)
       })
   }
@@ -228,7 +228,7 @@ class App extends Component{
     })
       .then(response => {
         if(response.status === 200){
-          alert("Student List Fetched!")
+          // alert("Student List Fetched!")
           return response.json()
         }
         else{
@@ -257,7 +257,7 @@ class App extends Component{
     })
       .then(response => {
         if(response.status === 200){
-          alert("Quiz List Fetched!")
+          // alert("Quiz List Fetched!")
           return response.json()
         }
         else{

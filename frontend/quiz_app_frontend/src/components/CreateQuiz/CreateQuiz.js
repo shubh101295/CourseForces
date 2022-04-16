@@ -33,7 +33,7 @@ class CreateQuiz extends React.Component {
 
   onSubmit = () => {
   	// Send to backend, route to CreateQuestions
-  	alert("Here!")
+  	// alert("Here!")
 	fetch('http://127.0.0.1:8000/quiz/add/', {
       method: 'post',
       headers: {
@@ -49,7 +49,7 @@ class CreateQuiz extends React.Component {
       })
     })
       .then(response => {
-      	alert(response)
+      	// alert(response)
       	return response.json()
       })
       .then(data => {

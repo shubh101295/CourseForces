@@ -145,7 +145,7 @@ class CreateQuestions extends React.Component {
 			}
 		}
 
-		alert(correct)
+		// alert(correct)
 
 		fetch('http://127.0.0.1:8000/quiz/question/add/', {
 	      method: 'post',
