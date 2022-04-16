@@ -8,7 +8,7 @@ from rest_framework import status
 # Create your views here.
 
 from .models import *
-from .utils import user_in_course_details,marks_for_a_question,delete_every_information_for_a_quiz,find_quiz_attempt_with_user_and_quiz
+from .utils import user_in_course_details,marks_for_a_question,delete_every_information_for_a_quiz,find_quiz_attempt_with_user_and_quiz,time_formating
 from .serializers import QuizSerializer,QuestionSerializer,OptionSerializer,QuizAttemptSerializer
 from myusers.utils import getUser
 from django.db.models import Q 
@@ -64,8 +64,8 @@ def quiz_in_a_course_list(request,course_pk):
 				"pk":i.quiz.pk,
 				"title":i.quiz.title,
 				"content":i.quiz.content,
-				"deadline":i.quiz.deadline,
-				"start_at":i.quiz.start_at,
+				"deadline":time_formating(i.quiz.deadline),
+				"start_at":time_formating(i.quiz.start_at),
 				"answer_key_visible":i.quiz.answer_key_visible,	
 				"num":len(_current_quiz_questions),
 				"show_submit_button":True,
@@ -207,11 +207,13 @@ def view_quiz_questions(request,course_pk, quiz_pk):
 			quiz_data = {
 				"title":quiz_in_course_relations[0].quiz.title,
 				"content":quiz_in_course_relations[0].quiz.content,
-				"start_at":quiz_in_course_relations[0].quiz.start_at,
-				"deadline":quiz_in_course_relations[0].quiz.deadline,
+				"start_at":time_formating(quiz_in_course_relations[0].quiz.start_at),
+				"deadline":time_formating(quiz_in_course_relations[0].quiz.deadline),
 				# "answer_key_visible":quiz_in_course_relations[0].quiz.answer_key_visible,
 				"questions":[]
 			}
+			# time_formating(quiz_in_course_relations[0].quiz.start_at)
+			# print("AAAAAAAAAAAAAAAAAAAA\n\n")
 			question_relation = question_in_quiz.objects.filter(Q(quiz=quiz_pk))
 			current_user_quiz_attempt = find_quiz_attempt_with_user_and_quiz(user,quiz_in_course_relations[0].quiz)
 			current_user_marks_details = {}

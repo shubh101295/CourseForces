@@ -85,3 +85,6 @@ def find_quiz_attempt_with_user_and_quiz(user,quiz):
 		if len(final_attempts)>0:
 			return qa.quiz_attempt
 	return None
+
+def time_formating(_time):
+	return _time.strftime('%H:%M %d %b,%Y')
