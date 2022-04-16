@@ -67,8 +67,18 @@ def quiz_in_a_course_list(request,course_pk):
 				"deadline":i.quiz.deadline,
 				"start_at":i.quiz.start_at,
 				"answer_key_visible":i.quiz.answer_key_visible,	
-				"num":len(_current_quiz_questions)
+				"num":len(_current_quiz_questions),
+				"show_submit_button":True,
+				"show_total_score":False
 			}
+			current_user_quiz_attempt = find_quiz_attempt_with_user_and_quiz(user,i.quiz)
+			if util_data["relation"] == 'P' or current_user_quiz_attempt is not None:
+				_current_quiz_data["show_submit_button"] = False
+			if current_user_quiz_attempt is not None and i.quiz.checked:
+				current_user_marks_details = json.loads(current_user_quiz_attempt.total_marks)
+				_current_quiz_data["show_total_score"] = True 
+				_current_quiz_data["total_score"] =  current_user_marks_details["total"]
+				
 			course_data["quiz_list"].append(_current_quiz_data)
 		course_data["message"]="ok"
 		return Response(course_data,status=status.HTTP_200_OK)
@@ -204,14 +214,6 @@ def view_quiz_questions(request,course_pk, quiz_pk):
 			current_user_quiz_attempt = find_quiz_attempt_with_user_and_quiz(user,quiz_in_course_relations[0].quiz)
 			current_user_marks_details = {}
 			if current_user_quiz_attempt is not None and quiz_in_course_relations[0].quiz.checked==True:
-				# print(current_user_quiz_attempt)
-				# print(current_user_quiz_attempt.pk)
-				# print(current_user_quiz_attempt.total_marks)
-				# print(current_user_quiz_attempt._meta)
-
-				# for a in current_user_quiz_attempt:
-				# 	print(a)
-
 				current_user_marks_details = json.loads(current_user_quiz_attempt.total_marks)
 
 			for _ques in question_relation:
