@@ -1,5 +1,5 @@
 import json
-
+from django.utils import timezone
 from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -69,7 +69,8 @@ def quiz_in_a_course_list(request,course_pk):
 				"answer_key_visible":i.quiz.answer_key_visible,	
 				"num":len(_current_quiz_questions),
 				"show_submit_button":True,
-				"show_total_score":False
+				"show_total_score":False,
+				"show_take_quiz":False
 			}
 			current_user_quiz_attempt = find_quiz_attempt_with_user_and_quiz(user,i.quiz)
 			if util_data["relation"] == 'P' or current_user_quiz_attempt is not None:
@@ -78,7 +79,8 @@ def quiz_in_a_course_list(request,course_pk):
 				current_user_marks_details = json.loads(current_user_quiz_attempt.total_marks)
 				_current_quiz_data["show_total_score"] = True 
 				_current_quiz_data["total_score"] =  current_user_marks_details["total"]
-				
+			if util_data["relation"] == 'P' or (util_data["relation"] == 'S' and timezone.now()>=i.quiz.start_at):
+				_current_quiz_data["show_take_quiz"] = True
 			course_data["quiz_list"].append(_current_quiz_data)
 		course_data["message"]="ok"
 		return Response(course_data,status=status.HTTP_200_OK)
@@ -358,7 +360,6 @@ def make_a_quiz_submission(request):
 @api_view(["GET"])
 def view_quiz_marks_list(request,course_pk, quiz_pk):
 	user = getUser(request)
-	# print(user)
 	util_data,course = user_in_course_details(user,course_pk)
 	if util_data["allowed"]:
 		if util_data["relation"] == 'P': 
