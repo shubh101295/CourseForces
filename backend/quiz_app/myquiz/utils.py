@@ -50,6 +50,8 @@ def marks_for_a_question(question_type,question_answer,student_answer,positive_m
 	for i in student_options:
 		if i not in correct_options:
 			return -1*negtive_marks
+	if len(student_options)==len(correct_options):
+		return positive_marks
 	return (len(student_options)/option_count)*positive_marks
 
 def delete_every_information_for_a_quiz(quiz_pk):
@@ -75,3 +77,11 @@ def delete_every_information_for_a_quiz(quiz_pk):
 		qa.delete()
 	current_quiz = Quiz.objects.filter(Q(pk=quiz_pk))
 	current_quiz.delete()
+
+def find_quiz_attempt_with_user_and_quiz(user,quiz):
+	attempts = quiz_quizattempt.objects.filter(Q(quiz=quiz))
+	for qa in attempts:
+		final_attempts = user_quizattempt.objects.filter(Q(user=user) & Q(quiz_attempt=qa.quiz_attempt))
+		if len(final_attempts)>0:
+			return qa.quiz_attempt
+	return None
