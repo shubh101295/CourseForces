@@ -286,6 +286,10 @@ def make_a_quiz_submission(request):
 				quiz_in_course_relations = quiz_in_course.objects.filter(Q(course=course) & Q(quiz=quiz_pk))
 				if len(quiz_in_course_relations)==1:
 					question_relation = question_in_quiz.objects.filter(Q(quiz=quiz_pk))
+					if timezone.now()<quiz_in_course_relations[0].quiz.start_at:
+						return Response({"message":"Quiz has not started, not considered a valid submission"},status=status.HTTP_400_BAD_REQUEST)
+					if timezone.now()>quiz_in_course_relations[0].quiz.deadline:
+						return Response({"message":"Quiz was submitted after the deadline, not considered a valid submission"},status=status.HTTP_400_BAD_REQUEST)
 					question_data = {}
 					for i in question_relation:
 						_ques = i.question
@@ -396,6 +400,9 @@ def calculate_all_student_marks(request):
 			if quiz_pk!="":
 				quiz_in_course_relations = quiz_in_course.objects.filter(Q(course=course) & Q(quiz=quiz_pk))
 				if len(quiz_in_course_relations)==1:
+					if timezone.now()<quiz_in_course_relations[0].quiz.deadline:
+						return Response({"message":"Quiz cannot be checked before the deadline, try after the deadline is over"},status=status.HTTP_400_BAD_REQUEST)
+					
 					attempts = quiz_quizattempt.objects.filter(Q(quiz=quiz_pk))
 					for qa in attempts:
 						current_user_question_attempts = question_attempt.objects.filter(Q(quiz_attempt=qa.quiz_attempt))
