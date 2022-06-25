@@ -1,7 +1,24 @@
-# CS315
+# CourseForces : An online assesment platform
+
+## Overview
 
 CourseForces is a portal where professors can create courses, add students,conduct
 quizzes for the students, and then get some analytics. Quizzes can contain a variety of
 types of questions like subjective questions as well as objective questions with the
 option of having Single correct(one option) or Multi correct(one or more than one
-option(s) correct) questions.We also have email notifications sending system.
+option(s) correct) questions. It also has a support for email notifications on various events.
+
+## Implementation Details
+
+The web app uses ReactJS for the frontend along with the tachyons libraryfor
+functional CSS.
+The backend is written using the python framework, Django. The backend also uses
+the Django REST framework, and SQLite as the database,which is the
+default database with Django.
+
+## Group Members
+|       Name      | Roll No |        Email        |
+|:---------------:|:-------:|:-------------------:|
+|  Shubh Agrawal  |  190828 | agshubh@iitk.ac.in  |
+|  Tarun Kanodia  |  190902 |  taruntk@iitk.ac.in |
+
