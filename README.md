@@ -7,7 +7,7 @@ quizzes for the students, and then get some analytics. Quizzes can contain a var
 types of questions like subjective questions as well as objective questions with the
 option of having Single correct(one option) or Multi correct(one or more than one
 option(s) correct) questions. It also has a support for email notifications on various events.
-CourseForces was created as a course project under the supervision of Prof. Sumit Ganguly.
+CourseForces was created as a course project for CS315 (Database management systems) under the supervision of Prof. Sumit Ganguly.
 
 ## Implementation Details
 
